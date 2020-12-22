@@ -7,9 +7,11 @@
 #include <stdio.h>
 
 int main(void) {
+	Graphics_setup_main();
+	Draw_default_screen();
 	
-    consoleDemoInit();
-    printf("\nTemplate nds\n");
+	/*consoleDemoInit();
+    printf("\nTemplate nds\n"); */
 
     while(1)
         swiWaitForVBlank();	
