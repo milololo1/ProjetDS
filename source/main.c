@@ -42,9 +42,9 @@ int main(void) {
 	Graphics_setup_main();
 	Draw_default_screen();
 	
-	mmInitDefaultMem((mm_addr)soundbank_bin);
+	/*mmInitDefaultMem((mm_addr)soundbank_bin);
 	mmLoad(MOD_TEST1);
-	mmStart(MOD_TEST1, MM_PLAY_LOOP);
+	mmStart(MOD_TEST1, MM_PLAY_LOOP);*/
 
 	/*consoleDemoInit();
     printf("\nTemplate nds\n"); */
