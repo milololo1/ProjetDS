@@ -7,6 +7,10 @@
 #include <stdio.h>
 #include "Graphics.h"
 
+#include <maxmod9.h>
+#include "soundbank.h"
+#include "soundbank_bin.h"
+
 #define NOMBRE_DE_MINIJEU 0; //le nombre de minijeu total, à définir au fur et à mesure de l'avancée
 #define VIE_MAX 3;
 
@@ -25,6 +29,12 @@ int main(void) {
 	Graphics_setup_main();
 	Draw_default_screen();
 	
+	mmInitDefaultMem((mm_addr)soundbank_bin);
+
+	mmLoad(MOD_TEST1);
+
+	mmStart(MOD_TEST1, MM_PLAY_LOOP);
+
 	/*consoleDemoInit();
     printf("\nTemplate nds\n"); */
 
