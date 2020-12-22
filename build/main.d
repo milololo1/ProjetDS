@@ -47,7 +47,8 @@ main.o: /home/nds/files/ProjectTemplate/AmongDS/AmongDS/source/main.c \
   /opt/devkitPro/libnds/include/nds/arm9/sprite.h \
   /opt/devkitPro/libnds/include/nds/system.h \
   /opt/devkitPro/libnds/include/nds/arm9/decompress.h \
-  /home/nds/files/ProjectTemplate/AmongDS/AmongDS/source/WiFi_minilib.h \
+  /opt/devkitPro/libnds/include/netdb.h \
+  /home/nds/files/ProjectTemplate/AmongDS/AmongDS/source/WiFi_connexion.h \
   /opt/devkitPro/libnds/include/dswifi9.h \
   /opt/devkitPro/libnds/include/dswifi_version.h \
   /opt/devkitPro/libnds/include/netinet/in.h \
@@ -149,7 +150,9 @@ main.o: /home/nds/files/ProjectTemplate/AmongDS/AmongDS/source/main.c \
 
 /opt/devkitPro/libnds/include/nds/arm9/decompress.h:
 
-/home/nds/files/ProjectTemplate/AmongDS/AmongDS/source/WiFi_minilib.h:
+/opt/devkitPro/libnds/include/netdb.h:
+
+/home/nds/files/ProjectTemplate/AmongDS/AmongDS/source/WiFi_connexion.h:
 
 /opt/devkitPro/libnds/include/dswifi9.h:
 
