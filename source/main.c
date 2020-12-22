@@ -5,6 +5,7 @@
 
 #include <nds.h>
 #include <stdio.h>
+#include "Graphics.h"
 
 #define NOMBRE_DE_MINIJEU 0; //le nombre de minijeu total, à définir au fur et à mesure de l'avancée
 #define VIE_MAX 3;
