@@ -22,7 +22,7 @@ int Graphics_subH;
 	graphical engine to be used.
 	It also enables the corresponding VRAM bank to be used.
 */
-void Graphics_setup_main();
+void Graphics_ini();
 
 
 /*
@@ -32,4 +32,6 @@ void Graphics_assignBuffer(enum BUFFER_TYPE bT, u16* buffer, int w, int h);
 
 
 //Addiche sur MAIN et SUB les background de base
-void Draw_default_screen();
+void Ini_upper_ingame_screen();
+void Ini_below_ingame_screen();
+void Push_Right_upper_ingame_BG2();

@@ -39,8 +39,9 @@ int main(void) {
 	challenge.difficulte = 0;
 	challenge.vitesse = 0;
 
-	Graphics_setup_main();
-	Draw_default_screen();
+	Graphics_ini();
+	Ini_upper_ingame_screen();
+	Ini_below_ingame_screen();
 	
 	/*mmInitDefaultMem((mm_addr)soundbank_bin);
 	mmLoad(MOD_TEST1);
