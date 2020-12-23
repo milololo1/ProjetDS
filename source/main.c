@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include "Graphics.h"
 #include "Controls.h"
+#include "Timer.h"
 
 #include <maxmod9.h>
 #include "soundbank.h"
@@ -32,11 +33,11 @@ typedef struct {
  * se prépare au prochain mini-jeu
  */
 void EcranTemporaire(){
-
-
-
-
-
+	int i;
+	for(i = 1; i < 10; ++i){
+		printf("%i\n", i);
+		Attendre(2);
+	}
 
 }
 
@@ -54,6 +55,10 @@ int main(void) {
 	game_challenge challenge;
 	challenge.difficulte = 0;
 	challenge.vitesse = 0;
+
+	irqInit();
+	irqEnable(IRQ_VBLANK);
+	Timer_init();
 
 	/*Graphics_ini();
 	Ini_upper_ingame_screen();
@@ -78,8 +83,9 @@ int main(void) {
 				lancement_du_jeu = handleKeysMenu();
 				swiWaitForVBlank(); //nécessaire?
 			}
-
+			printf("jeu lance\n");
 			lancement_du_jeu = false;
+			EcranTemporaire();
 
 			while(!status.vie_restante){
 					/*
