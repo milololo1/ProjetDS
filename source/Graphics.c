@@ -4,9 +4,9 @@
 #include "upper_ingameTest.h"
 #include "costumTiles.h"
 
-#define TIME_COLOR_0 ARGB16(31,31,0,0)
-#define TIME_COLOR_1 ARGB16(31,0,31,0)
-#define TIME_COLOR_2 ARGB16(31,0,0,31)
+#define TIME_COLOR_0 RGB15(15,15,15)
+#define TIME_COLOR_1 RGB15(0,31,0)
+#define TIME_COLOR_2 RGB15(0,0,31)
 
 void Graphics_ini()
 {
@@ -54,14 +54,14 @@ void Ini_upper_ingame_screen()
 	REG_DISPCNT_SUB = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE;
 
 	//Configure background BG2 in tiled mode using a 32x32 grid and 256 colors
-	//Background configuration ---- cours| cours | 1*2kb | 1*16kb
+	//Background configuration ---- cours| cours | 1*2kb | 5*16kb
 	BGCTRL_SUB[2] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(1) | BG_TILE_BASE(5);
 
 	//Copie dans la memoire des tiles, map et palettes.
 	//Initialisation des palettes
-	BG_PALETTE_SUB[0] = TIME_COLOR_0;
-	BG_PALETTE_SUB[1] = TIME_COLOR_1;
-	BG_PALETTE_SUB[2] = TIME_COLOR_2;
+	BG_PALETTE_SUB[253] = TIME_COLOR_0;
+	BG_PALETTE_SUB[254] = TIME_COLOR_1;
+	BG_PALETTE_SUB[255] = TIME_COLOR_2;
 
 	//Copie des tiles
 	dmaCopy(TIME_COLOR_0_tile, (u8*)BG_TILE_RAM_SUB(5), 64);
