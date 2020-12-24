@@ -32,6 +32,11 @@ void Graphics_assignBuffer(enum BUFFER_TYPE bT, u16* buffer, int w, int h);
 
 
 //Addiche sur MAIN et SUB les background de base
-void Ini_upper_ingame_screen();
-void Ini_below_ingame_screen();
-void Push_Right_upper_ingame_BG2();
+void upper_ini_ingame_screen();
+void below_ini_ingame_screen();
+void upper_affiche_nombre();
+void upper_afficher_chiffre();
+void upper_afficher_vie();
+void upper_cacher_vie();
+void upper_afficher_barre();
+void upper_cacher_barre();
