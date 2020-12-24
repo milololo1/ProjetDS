@@ -78,7 +78,7 @@ void upper_ini_ingame_screen()
 }
 
 
-void upper_affiche_nombre(int nombre, int tileX, int tileY)
+void upper_afficher_nombre(int nombre, int tileX, int tileY)
 {
 	if(tileX > 30 || tileX < 0 || tileY > 21 || tileY < 0) return;
 
