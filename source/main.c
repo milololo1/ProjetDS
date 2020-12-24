@@ -8,25 +8,11 @@
 #include "Graphics.h"
 #include "Controls.h"
 #include "Timer.h"
+#include "jeu.h"
 
 #include <maxmod9.h>
 #include "soundbank.h"
 #include "soundbank_bin.h"
-
-#define NOMBRE_DE_MINIJEU 0; //le nombre de minijeu total, à définir au fur et à mesure de l'avancée
-#define VIE_MAX 3;
-
-
-typedef struct {
-	int score;
-	int vie_restante;
-} game_status;
-
-typedef struct {
-	int difficulte; //0, 1, 2 (défini la difficulté du niveau)
-	int vitesse; //peut aller vers l'infini (défini le temps donné au joueur
-} game_challenge;
-
 
 /*
  * Affiche qqch pendant quelques secondes, pour que le joueur
@@ -51,24 +37,29 @@ int main(void) {
 	game_status status;
 	status.score = 0;
 	status.vie_restante = VIE_MAX;
+	status.difficulte = 0;
+	status.vitesse = 0;
 
-	game_challenge challenge;
-	challenge.difficulte = 0;
-	challenge.vitesse = 0;
-
-	irqInit();
+	/*irqInit();
 	irqEnable(IRQ_VBLANK);
-	Timer_init();
+	Timer_init();*/
 
-	/*Graphics_ini();
-	Ini_upper_ingame_screen();
-	Ini_below_ingame_screen();*/
+	Graphics_ini();
+	//Ini_upper_ingame_screen();
+	//Ini_below_ingame_screen();
+	upper_ini_ingame_screen();
+	upper_afficher_vie();
+	upper_afficher_nombre(0, 10, 10);
 	
+	while(1){
+		swiWaitForVBlank();
+	}
+
 	/*mmInitDefaultMem((mm_addr)soundbank_bin);
 	mmLoad(MOD_TEST1);
 	mmStart(MOD_TEST1, MM_PLAY_LOOP);*/
 
-	consoleDemoInit();
+	//consoleDemoInit();
     //printf("\nTemplate nds\n");
 
 	//while général qui contient tout le déroulement du jeu
