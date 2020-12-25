@@ -73,7 +73,9 @@ int main(void) {
 	upper_afficher_vie(&status);
 	//upper_cacher_vie(&status);
 
-	//upper_afficher_barre(32);
+	upper_afficher_barre(27);
+	//upper_cacher_barre();
+	//upper_afficher_barre(7);
 
 	while(1){
 		swiWaitForVBlank();

@@ -175,12 +175,12 @@ void upper_dessiner_barre(int barre_restante, int couleur)
 	int tileY = BARRE_TILEY;
 	int i,j;
 	for(i=0; i<barre_restante; ++i){
-		for(j=0; i<2; j++){
+		for(j=0; j<2; j++){
 			BG_MAP_RAM_SUB(1)[32*(tileY+j) + tileX-i] = couleur;
 		}
 	}
 	for(i=barre_restante; i<32; ++i){
-		for(j=0; i<2; j++){
+		for(j=0; j<2; j++){
 			BG_MAP_RAM_SUB(1)[32*(tileY+j) + tileX-i] = 0;
 		}
 	}
@@ -188,17 +188,26 @@ void upper_dessiner_barre(int barre_restante, int couleur)
 
 void upper_afficher_barre(int barre_restante)
 {
-	if(barre_restante > 32) barre_restante = 32;
-	if(barre_restante < 0) barre_restante = 0;
+	/*
+	BG_MAP_RAM_SUB(1)[0] = OFF_BARRE_COULEUR;
+	BG_MAP_RAM_SUB(1)[1] = 1+OFF_BARRE_COULEUR;
+	BG_MAP_RAM_SUB(1)[2] = 2+OFF_BARRE_COULEUR;
+	 */
 
-	int orange_threshold = BARRE_ORANGE_THRESHOLD;
-	int rouge_threshold = BARRE_ROUGE_THRESHOLD;
+	if(barre_restante > 32) {
+		barre_restante = 32;
+	} else if(barre_restante < 0) {
+		barre_restante = 0;
+	}
+
+	int couleur1_threshold = BARRE_COULEUR1_THRESHOLD;
+	int couleur2_threshold = BARRE_COULEUR2_THRESHOLD;
 	int couleur;
 
-	if(barre_restante > orange_threshold) {
+	if(barre_restante > couleur1_threshold) {
 		couleur = OFF_BARRE_COULEUR;
 		upper_dessiner_barre(barre_restante, couleur);
-	} else if(barre_restante > rouge_threshold){
+	} else if(barre_restante <= couleur1_threshold && barre_restante > couleur2_threshold){
 		couleur = 1+OFF_BARRE_COULEUR;
 		upper_dessiner_barre(barre_restante, couleur);
 	} else {
@@ -213,7 +222,7 @@ void upper_cacher_barre()
 	int tileY = BARRE_TILEY;
 	int i,j;
 	for(i=0; i<32; ++i){
-		for(j=0; i<2; j++){
+		for(j=0; j<2; j++){
 			BG_MAP_RAM_SUB(1)[32*(tileY+j) + tileX-i] = 0;
 		}
 	}
