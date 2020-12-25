@@ -69,7 +69,7 @@ int main(void) {
 	status.vitesse->nombre = 34;
 	upper_afficher_compteur(status.vitesse);
 	
-	//update_vie(&status, 2);
+	update_vie(&status, 2);
 	upper_afficher_vie(&status);
 	//upper_cacher_vie(&status);
 
