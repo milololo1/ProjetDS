@@ -34,11 +34,26 @@ int main(void) {
 	bool recharge_du_jeu = false;
 	bool lancement_du_jeu = false;
 
+	compteur score_cpt;
+	score_cpt.tileX = SCORE_TILEX;
+	score_cpt.tileY = SCORE_TILEY;
+	score_cpt.nombre = 0;
+
+	compteur difficulte_cpt;
+	difficulte_cpt.tileX = DIFFICULTE_TILEX;
+	difficulte_cpt.tileY = DIFFICULTE_TILEY;
+	difficulte_cpt.nombre = 0;
+
+	compteur vitesse_cpt;
+	vitesse_cpt.tileX = VITESSE_TILEX;
+	vitesse_cpt.tileY = VITESSE_TILEY;
+	vitesse_cpt.nombre = 0;
+
 	game_status status;
-	status.score = 0;
+	status.score = &score_cpt;
 	status.vie_restante = VIE_MAX;
-	status.difficulte = 0;
-	status.vitesse = 0;
+	status.difficulte = &difficulte_cpt;
+	status.vitesse = &vitesse_cpt;
 
 	/*irqInit();
 	irqEnable(IRQ_VBLANK);
