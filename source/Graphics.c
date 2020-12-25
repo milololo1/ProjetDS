@@ -2,9 +2,12 @@
 #include "cafeteriaTest.h"
 #include "mapImpostorTest.h"
 #include "upper_ingameTest.h"
+#include "belowTiles.h"
 #include "upperTiles.h"
 #include "costumTiles.h"
 #include "jeu.h"
+
+#include "spriteBallon.h"
 
 #define TIME_COLOR_0 RGB15(15,15,15)
 #define TIME_COLOR_1 RGB15(0,31,0)
@@ -35,12 +38,18 @@ void Graphics_assignBuffer(enum BUFFER_TYPE bT, u16* buffer, int w, int h)
 
 void upper_ini_ingame_screen()
 {
-	//Enable a proper RAM memory bank for sub engine
+	/*
+	 * Mise a disposition de la RAM memory bank pour le sub engine
+	 */
 	VRAM_C_CR = VRAM_ENABLE
 			| VRAM_C_SUB_BG;
 
-	//Configure background BG3 in tiled mode using a 32x32 grid and 256 colors
-	//Background configuration ---- cours| cours | 0*2kb | 1*16kb
+
+	/*
+	 * Configuration du background BG3 en tiled mode, 32x32 grille and 256 couleurs
+	 */
+
+	//cours| cours | 0*2kb | 1*16kb
 	BGCTRL_SUB[3] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(0) | BG_TILE_BASE(1);
 
 	//Copie dans la memoire des tiles, map et palettes.
@@ -48,8 +57,12 @@ void upper_ini_ingame_screen()
 	dmaCopy(upper_ingameTestMap, BG_MAP_RAM_SUB(0), upper_ingameTestMapLen);
 	dmaCopy(upper_ingameTestPal, BG_PALETTE_SUB, upper_ingameTestPalLen);
 
-	//Configure background BG2 in tiled mode using a 32x32 grid and 256 colors
-	//Background configuration ---- cours| cours | 1*2kb | 3*16kb
+
+	/*
+	 * Configuration du background BG2 en tiled mode, 32x32 grille and 256 couleurs
+	 */
+
+	//cours| cours | 1*2kb | 2*16kb
 	BGCTRL_SUB[2] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(1) | BG_TILE_BASE(2);
 
 	//Copie dans la memoire des tiles, map et palettes.
@@ -61,19 +74,17 @@ void upper_ini_ingame_screen()
 	dmaCopy(upperTilesMap, BG_MAP_RAM_SUB(1), upperTilesMapLen);
 	dmaCopy(upperTilesPal, &BG_PALETTE_SUB[upper_ingameTestPalLen], upperTilesPalLen);
 
-
-	//Test
+	//Initialisation de la map en transparant
 	for(j=0; j<32; ++j){
 		for(i=0; i<32; ++i){
 			BG_MAP_RAM_SUB(1)[32*j + i] = 0;
 		}
 	}
-	//for(j=0; j<32; ++j){
-	//	BG_MAP_RAM_SUB(1)[32*6 + j] = j;
-	//}
 
 
- 	//activation background 2 et 3 //A ACTIVER DANS LE MAIN???
+	/*
+	 * activation background 2 et 3 //A ACTIVER DANS LE MAIN???
+	 */
 	REG_DISPCNT_SUB = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE;
 }
 
@@ -231,26 +242,56 @@ void upper_cacher_barre()
 
 void below_ini_ingame_screen()
 {
-	//Enable a proper RAM memory bank for the main engine
+	/*
+	 * Mise a disposition de la RAM memory bank pour le main engine et les sprites
+	 */
 	VRAM_A_CR = VRAM_ENABLE //Enable
 			| VRAM_A_MAIN_BG; //Bank for the main engine
+	VRAM_B_CR = VRAM_ENABLE |
+			VRAM_B_MAIN_SPRITE_0x06400000; //offset pour les sprites car VRAM A utilise
 
- 	//activation background 3
-	REG_DISPCNT = MODE_0_2D | DISPLAY_BG3_ACTIVE;
 
-	//Background configuration MAIN ---- offset | tjrs la meme chose tkt ---
-	BGCTRL[3] = BG_MAP_BASE(0) | BgSize_B8_256x256;
+	/*
+	 * Configuration du background BG3 en tiled mode, 32x32 grille and 256 couleurs
+	 */
 
-	//AFfine Matrix
-    REG_BG3PA = 256;
-    REG_BG3PC = 0;
-    REG_BG3PB = 0;
-    REG_BG3PD = 256;
+	//cours| cours | 0*2kb | 1*16kb
+	BGCTRL[3] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(0) | BG_TILE_BASE(1);
 
-	//Copy of the palette and the bitmap
-	dmaCopy(cafeteriaTestBitmap, BG_MAP_RAM(0), cafeteriaTestBitmapLen);
-	dmaCopy(cafeteriaTestPal, BG_PALETTE, cafeteriaTestPalLen);
+	//Copie dans la memoire des tiles, map et palettes.
+	dmaCopy(mapImpostorTestTiles, BG_TILE_RAM(1), mapImpostorTestTilesLen);
+	dmaCopy(mapImpostorTestMap, BG_MAP_RAM(0), mapImpostorTestMapLen);
+	dmaCopy(mapImpostorTestPal, BG_PALETTE, mapImpostorTestPalLen);
 
+
+	/*
+	 * Configuration du background BG2 en tiled mode, 32x32 grille and 256 couleurs
+	 */
+
+	//cours| cours | 1*2kb | 2*16kb
+	BGCTRL[2] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(1) | BG_TILE_BASE(2);
+
+	//Copie dans la memoire des tiles, map et palettes.
+	dmaCopy(belowTilesTiles, BG_TILE_RAM(2), belowTilesTilesLen);
+	int i,j;
+	for(i=32; i<belowTilesTilesLen; i++){
+		BG_TILE_RAM(2)[i] += mapImpostorTestPalLen << 8 | mapImpostorTestPalLen;
+	}
+	dmaCopy(belowTilesMap, BG_MAP_RAM(1), upperTilesMapLen);
+	dmaCopy(belowTilesPal, &BG_PALETTE[upper_ingameTestPalLen], belowTilesPalLen);
+
+	//Initialisation de la map en transparant
+	for(j=0; j<32; ++j){
+		for(i=0; i<32; ++i){
+			BG_MAP_RAM(1)[32*j + i] = 0;
+		}
+	}
+
+
+	/*
+	 * activation background 3 //A ACTIVER DANS LE MAIN???
+	 */
+	REG_DISPCNT = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE;
 }
 
 

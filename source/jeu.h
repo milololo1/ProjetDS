@@ -1,3 +1,4 @@
+#pragma once
 
 #define NOMBRE_DE_MINIJEU 0; //le nombre de minijeu total, à définir au fur et à mesure de l'avancée
 

@@ -9,6 +9,7 @@
 #include "Controls.h"
 #include "Timer.h"
 #include "jeu.h"
+#include "ballon.h"
 
 #include <maxmod9.h>
 #include "soundbank.h"
@@ -61,6 +62,7 @@ int main(void) {
 
 	Graphics_ini();
 	upper_ini_ingame_screen();
+	below_ini_ingame_screen();
 
 	status.score->nombre = 610;
 	upper_afficher_compteur(status.score);
@@ -76,6 +78,8 @@ int main(void) {
 	upper_afficher_barre(27);
 	//upper_cacher_barre();
 	//upper_afficher_barre(7);
+
+	mini_jeu_ballon(&status);
 
 	while(1){
 		swiWaitForVBlank();

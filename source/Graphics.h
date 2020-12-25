@@ -9,7 +9,6 @@
 #define OFF_COEUR 62;
 #define OFF_BARRE_COULEUR 66;
 
-
 /*
 	This function does not receive any input parameter. It initializes the main
 	graphical engine to be used.
