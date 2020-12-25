@@ -60,12 +60,21 @@ int main(void) {
 	Timer_init();*/
 
 	Graphics_ini();
-	//Ini_upper_ingame_screen();
-	//Ini_below_ingame_screen();
 	upper_ini_ingame_screen();
-	upper_afficher_vie();
-	upper_afficher_nombre(0, 10, 10);
+
+	status.score->nombre = 610;
+	upper_afficher_compteur(status.score);
+	status.difficulte->nombre = 2;
+	upper_afficher_compteur(status.difficulte);
+	status.vitesse->nombre = 34;
+	upper_afficher_compteur(status.vitesse);
 	
+	//update_vie(&status, 2);
+	upper_afficher_vie(&status);
+	//upper_cacher_vie(&status);
+
+	//upper_afficher_barre(32);
+
 	while(1){
 		swiWaitForVBlank();
 	}

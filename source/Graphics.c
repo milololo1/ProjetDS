@@ -77,6 +77,19 @@ void upper_ini_ingame_screen()
 	REG_DISPCNT_SUB = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE;
 }
 
+void upper_afficher_chiffre(int chiffre, int tileX, int tileY)
+{
+	if(tileX > 30 || tileX < 0 || tileY > 21 || tileY < 0) return;
+
+	int chiffre_off = 2*chiffre;
+
+	BG_MAP_RAM_SUB(1)[32*tileY + tileX] = chiffre_off + OFF_CHIFFRES_LIGNE1;
+	BG_MAP_RAM_SUB(1)[32*tileY + tileX+1] = chiffre_off+1 + OFF_CHIFFRES_LIGNE1;
+	BG_MAP_RAM_SUB(1)[32*(tileY+1) + tileX] = chiffre_off + OFF_CHIFFRES_LIGNE2;
+	BG_MAP_RAM_SUB(1)[32*(tileY+1) + tileX+1] = chiffre_off+1 + OFF_CHIFFRES_LIGNE2;
+	BG_MAP_RAM_SUB(1)[32*(tileY+2) + tileX] = chiffre_off + OFF_CHIFFRES_LIGNE3;
+	BG_MAP_RAM_SUB(1)[32*(tileY+2) + tileX+1] = chiffre_off+1 + OFF_CHIFFRES_LIGNE3;
+}
 
 void upper_afficher_nombre(int nombre, int tileX, int tileY)
 {
@@ -104,59 +117,106 @@ void upper_afficher_nombre(int nombre, int tileX, int tileY)
 	}
 }
 
-void upper_afficher_chiffre(int chiffre, int tileX, int tileY)
+void upper_afficher_compteur(compteur* cpt)
 {
-	if(tileX > 30 || tileX < 0 || tileY > 21 || tileY < 0) return;
-
-	int offset = 1;
-	int ligne2_off = 21;
-	int ligne3_off = 20;
-	int chiffre_off = 2*chiffre;
-
-	BG_MAP_RAM_SUB(1)[32*tileY + tileX] = chiffre_off + offset;
-	BG_MAP_RAM_SUB(1)[32*tileY + tileX+1] = chiffre_off + offset+1;
-	offset += ligne2_off;
-	BG_MAP_RAM_SUB(1)[32*(tileY+1) + tileX] = chiffre_off + offset;
-	BG_MAP_RAM_SUB(1)[32*(tileY+1) + tileX+1] = chiffre_off + offset+1;
-	offset += ligne3_off;
-	BG_MAP_RAM_SUB(1)[32*(tileY+2) + tileX] = chiffre_off + offset;
-	BG_MAP_RAM_SUB(1)[32*(tileY+2) + tileX+1] = chiffre_off + offset+1;
+	upper_afficher_nombre(cpt->nombre, cpt->tileX, cpt->tileY);
 }
 
-void upper_cacher_nombre(int chiffre, int tileX, int tileY)
+void upper_cacher_compteur(compteur* cpt)
 {
-	//J'att ma struct pour faire ca
+	int tileY = cpt->tileY;
+	BG_MAP_RAM_SUB(1)[32*tileY + cpt->tileX] = 0;
+	BG_MAP_RAM_SUB(1)[32*tileY + cpt->tileX+1] = 0;
+	BG_MAP_RAM_SUB(1)[32*(tileY+1) + cpt->tileX] = 0;
+	BG_MAP_RAM_SUB(1)[32*(tileY+1) + cpt->tileX+1] = 0;
+	BG_MAP_RAM_SUB(1)[32*(tileY+2) + cpt->tileX] = 0;
+	BG_MAP_RAM_SUB(1)[32*(tileY+2) + cpt->tileX+1] = 0;
 }
 
-void upper_afficher_vie()
+
+void upper_afficher_vie(game_status* status)
 {
-	//J'att ma struct pour faire ca
-	int tileX = 24;
-	int tileY = 18;
-	int coeur_off = 62;
-	int ligne2_off = 2;
+	int tileX = VIE_TILEX;
+	int tileY = VIE_TILEY;
+	int vie_max = VIE_MAX;
 	int i;
-	for(i=0; i<5; i+=2){
-		BG_MAP_RAM_SUB(1)[32*tileY + tileX+i] = coeur_off;
-		BG_MAP_RAM_SUB(1)[32*tileY + tileX+i+1] = coeur_off+1;
-		BG_MAP_RAM_SUB(1)[32*(tileY+1) + tileX+i] = coeur_off + ligne2_off;
-		BG_MAP_RAM_SUB(1)[32*(tileY+1) + tileX+i+1] = coeur_off + ligne2_off + 1;
+	for(i=0; i<2*status->vie_restante; i+=2){
+		BG_MAP_RAM_SUB(1)[32*tileY + tileX-i] = OFF_COEUR;
+		BG_MAP_RAM_SUB(1)[32*tileY + tileX+1-i] = 1+OFF_COEUR;
+		BG_MAP_RAM_SUB(1)[32*(tileY+1) + tileX-i] = 2+OFF_COEUR;
+		BG_MAP_RAM_SUB(1)[32*(tileY+1) + tileX+1-i] = 3+OFF_COEUR;
+
+	}
+	for(i=2*status->vie_restante; i<2*vie_max; i+=2){
+		BG_MAP_RAM_SUB(1)[32*tileY + tileX-i] = 0;
+		BG_MAP_RAM_SUB(1)[32*tileY + tileX+1-i] = 0;
+		BG_MAP_RAM_SUB(1)[32*(tileY+1) + tileX-i] = 0;
+		BG_MAP_RAM_SUB(1)[32*(tileY+1) + tileX+1-i] = 0;
 	}
 }
 
-void upper_cacher_vie()
+void upper_cacher_vie(game_status* status)
 {
-	//J'att ma struct pour faire ca
+	int tileX = VIE_TILEX;
+	int tileY = VIE_TILEY;
+	int vie_max = VIE_MAX;
+	int i;
+	for(i=0; i<2*vie_max; i+=2){
+		BG_MAP_RAM_SUB(1)[32*tileY + tileX-i] = 0;
+		BG_MAP_RAM_SUB(1)[32*tileY + tileX+1-i] = 0;
+		BG_MAP_RAM_SUB(1)[32*(tileY+1) + tileX-i] = 0;
+		BG_MAP_RAM_SUB(1)[32*(tileY+1) + tileX+1-i] = 0;
+	}
 }
 
-void upper_afficher_barre()
+void upper_dessiner_barre(int barre_restante, int couleur)
 {
-	//J'att ma struct pour faire ca
+	int tileX = BARRE_TILEX;
+	int tileY = BARRE_TILEY;
+	int i,j;
+	for(i=0; i<barre_restante; ++i){
+		for(j=0; i<2; j++){
+			BG_MAP_RAM_SUB(1)[32*(tileY+j) + tileX-i] = couleur;
+		}
+	}
+	for(i=barre_restante; i<32; ++i){
+		for(j=0; i<2; j++){
+			BG_MAP_RAM_SUB(1)[32*(tileY+j) + tileX-i] = 0;
+		}
+	}
+}
+
+void upper_afficher_barre(int barre_restante)
+{
+	if(barre_restante > 32) barre_restante = 32;
+	if(barre_restante < 0) barre_restante = 0;
+
+	int orange_threshold = BARRE_ORANGE_THRESHOLD;
+	int rouge_threshold = BARRE_ROUGE_THRESHOLD;
+	int couleur;
+
+	if(barre_restante > orange_threshold) {
+		couleur = OFF_BARRE_COULEUR;
+		upper_dessiner_barre(barre_restante, couleur);
+	} else if(barre_restante > rouge_threshold){
+		couleur = 1+OFF_BARRE_COULEUR;
+		upper_dessiner_barre(barre_restante, couleur);
+	} else {
+		couleur = 2+OFF_BARRE_COULEUR;
+		upper_dessiner_barre(barre_restante, couleur);
+	}
 }
 
 void upper_cacher_barre()
 {
-	//J'att ma struct pour faire ca
+	int tileX = BARRE_TILEX;
+	int tileY = BARRE_TILEY;
+	int i,j;
+	for(i=0; i<32; ++i){
+		for(j=0; i<2; j++){
+			BG_MAP_RAM_SUB(1)[32*(tileY+j) + tileX-i] = 0;
+		}
+	}
 }
 
 
