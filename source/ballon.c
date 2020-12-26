@@ -1,8 +1,10 @@
 #include <nds.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "ballon.h"
 #include "spriteBallon.h"
+#include "Graphics.h"
 
 #define SCREEN_WIDTH	256
 #define	SCREEN_HEIGHT	192
@@ -23,18 +25,31 @@ void configuration_Sprites()
 	swiCopy(spriteBallonTiles, gfx_ballon, spriteBallonTilesLen/2);
 }
 
+void configuration_obstacle(){
+	int tileX = 6;
+	int tileY = 6;
+	BG_MAP_RAM(1)[32*tileY + tileX] = OFF_COEUR;
+	BG_MAP_RAM(1)[32*tileY + tileX+1] = 1+OFF_COEUR;
+	BG_MAP_RAM(1)[32*(tileY+1) + tileX] = 2+OFF_COEUR;
+	BG_MAP_RAM(1)[32*(tileY+1) + tileX+1] = 3+OFF_COEUR;
+}
+
 
 void mini_jeu_ballon(game_status* status)
 {
 	//Configuration des sprites et initialisation des graphiques
 	configuration_Sprites();
+	configuration_obstacle();
 
 	//test
 	//BG_MAP_RAM(1)[32*4 + 4] = 6;
 
+	bool echec = false;
+
 	//Position
 	int x = 0, y = 0, keys;
-	while(1){
+	while(!echec){
+
 	    //Read held keys
 	    scanKeys();
 	    keys = keysHeld();
@@ -62,5 +77,9 @@ void mini_jeu_ballon(game_status* status)
 	    swiWaitForVBlank();
 	    //Update the sprites
 		oamUpdate(&oamMain);
+
+		if(x > 40 && x <= 56 && y > 40 && y <= 56){
+			echec = true;
+		}
 	}
 }
