@@ -12,6 +12,10 @@
 #define	SPRITE_HITBOX_WIDTH	16
 #define	SPRITE_HITBOX_HEIGHT 16
 
+#define OBSTACLE_1 (x > 40 && x <= 56 && y > 40 && y <= 56)
+#define OBSTACLE_2 (x > 80 && x <= 96 && y > 80 && y <= 96)
+#define OBJECTIF (x > 120 && x <= 136 && y > 120 && y <= 136)
+
 void configuration_Sprites()
 {
 	//Initialisation de sprite manager and the engine
@@ -32,6 +36,23 @@ void configuration_obstacle(){
 	BG_MAP_RAM(1)[32*tileY + tileX+1] = 1+OFF_COEUR;
 	BG_MAP_RAM(1)[32*(tileY+1) + tileX] = 2+OFF_COEUR;
 	BG_MAP_RAM(1)[32*(tileY+1) + tileX+1] = 3+OFF_COEUR;
+
+	tileX = 12;
+	tileY = 12;
+	BG_MAP_RAM(1)[32*tileY + tileX] = OFF_COEUR;
+	BG_MAP_RAM(1)[32*tileY + tileX+1] = 1+OFF_COEUR;
+	BG_MAP_RAM(1)[32*(tileY+1) + tileX] = 2+OFF_COEUR;
+	BG_MAP_RAM(1)[32*(tileY+1) + tileX+1] = 3+OFF_COEUR;
+
+}
+
+void configuration_objectif(){
+	int tileX = 18;
+	int tileY = 18;
+	BG_MAP_RAM(1)[32*tileY + tileX] = OFF_COEUR;
+	BG_MAP_RAM(1)[32*tileY + tileX+1] = 1+OFF_COEUR;
+	BG_MAP_RAM(1)[32*(tileY+1) + tileX] = 2+OFF_COEUR;
+	BG_MAP_RAM(1)[32*(tileY+1) + tileX+1] = 3+OFF_COEUR;
 }
 
 
@@ -40,15 +61,17 @@ void mini_jeu_ballon(game_status* status)
 	//Configuration des sprites et initialisation des graphiques
 	configuration_Sprites();
 	configuration_obstacle();
+	configuration_objectif();
 
 	//test
 	//BG_MAP_RAM(1)[32*4 + 4] = 6;
 
 	bool echec = false;
+	bool succes = false;
 
 	//Position
 	int x = 0, y = 0, keys;
-	while(!echec){
+	while(!echec && !succes){
 
 	    //Read held keys
 	    scanKeys();
@@ -78,8 +101,12 @@ void mini_jeu_ballon(game_status* status)
 	    //Update the sprites
 		oamUpdate(&oamMain);
 
-		if(x > 40 && x <= 56 && y > 40 && y <= 56){
+		if(OBSTACLE_1 || OBSTACLE_2){
 			echec = true;
+		}
+
+		if(OBJECTIF){
+			succes = true;
 		}
 	}
 }
