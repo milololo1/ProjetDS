@@ -4,7 +4,7 @@
 #include "jeu.h"
 
 
-//pointeur sur le srpite ballon
+//pointeur sur le sprite ballon
 u16* gfx_ballon;
 
 

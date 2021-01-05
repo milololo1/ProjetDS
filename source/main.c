@@ -10,6 +10,7 @@
 #include "Timer.h"
 #include "jeu.h"
 #include "ballon.h"
+#include "coupe.h"
 
 #include <maxmod9.h>
 #include "soundbank.h"
@@ -22,8 +23,8 @@
 void EcranTemporaire(){
 	int i;
 	for(i = 1; i <= 3; ++i){
-		printf("%i\n", i);
 		Attendre(1);
+		printf("%i\n", i);
 	}
 
 }
@@ -110,6 +111,7 @@ int main(void) {
 			lancement_du_jeu = false;
 
 			//irqInit();
+			//irqEnable(IRQ_VBLANK);
 
 			while(status.vie_restante != 0){
 					/*
@@ -136,7 +138,8 @@ int main(void) {
 				if(random == 0){
 					mini_jeu_ballon(&status);
 				}
-				else if(random == 1){
+				else{
+					printf("rentre ici au moins bordel\n");
 					mini_jeu_coupe(&status);
 				}
 

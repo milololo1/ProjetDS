@@ -17,10 +17,13 @@ void configuration_objectif_coupe(){
 	BG_MAP_RAM(1)[32*(tileY+1) + tileX] = 2+OFF_COEUR;
 	BG_MAP_RAM(1)[32*(tileY+1) + tileX+1] = 3+OFF_COEUR;
 
+	printf("config ok\n");
 }
 
 
 void mini_jeu_coupe(game_status* status){
+
+	printf("on rentre dans le jeu\n");
 
 	configuration_objectif_coupe();
 
@@ -29,7 +32,7 @@ void mini_jeu_coupe(game_status* status){
 
 	int touchedPositions[SCREEN_WIDTH*SCREEN_HEIGHT]; //contient toute les positions déjà touchée
 
-	consoleDemoInit();
+	//consoleDemoInit();
 
 	touchPosition touch;
 	while(!echec && !success){
@@ -53,6 +56,8 @@ void mini_jeu_coupe(game_status* status){
 				success = true;
 			}
 		}
+
+		swiWaitForVBlank();
 
 	}
 }
