@@ -21,9 +21,9 @@
  */
 void EcranTemporaire(){
 	int i;
-	for(i = 1; i < 10; ++i){
+	for(i = 1; i <= 3; ++i){
 		printf("%i\n", i);
-		Attendre(2);
+		Attendre(1);
 	}
 
 }
@@ -56,9 +56,8 @@ int main(void) {
 	status.difficulte = &difficulte_cpt;
 	status.vitesse = &vitesse_cpt;
 
-	/*irqInit();
-	irqEnable(IRQ_VBLANK);
-	Timer_init();*/
+	//irqInit();
+	//irqEnable(IRQ_VBLANK);
 
 	Graphics_ini();
 	upper_ini_ingame_screen();
@@ -79,17 +78,20 @@ int main(void) {
 	//upper_cacher_barre();
 	//upper_afficher_barre(7);
 
-	mini_jeu_ballon(&status);
+	//mini_jeu_ballon(&status);
+	//mini_jeu_coupe(&status);
 
-	while(1){
+	/*while(1){
 		swiWaitForVBlank();
-	}
+	}*/
+
+	srand(time(NULL)); //IMPORTANT (à faire une seule fois)
 
 	/*mmInitDefaultMem((mm_addr)soundbank_bin);
 	mmLoad(MOD_TEST1);
 	mmStart(MOD_TEST1, MM_PLAY_LOOP);*/
 
-	//consoleDemoInit();
+	consoleDemoInit();
     //printf("\nTemplate nds\n");
 
 	//while général qui contient tout le déroulement du jeu
@@ -100,15 +102,16 @@ int main(void) {
 		* ici création du menu (bouton pour lancer le jeu + bg si nécessaire)
 		*
 		*/
-		while(!lancement_du_jeu){
-				lancement_du_jeu = handleKeysMenu();
+		while(!handleKeysMenu()){
+
 				swiWaitForVBlank(); //nécessaire?
 			}
 			printf("jeu lance\n");
 			lancement_du_jeu = false;
-			EcranTemporaire();
 
-			while(!status.vie_restante){
+			//irqInit();
+
+			while(status.vie_restante != 0){
 					/*
 					 *
 					 *
@@ -117,6 +120,28 @@ int main(void) {
 					 *
 					 *
 					 */
+
+				printf("on utilise le random\n");
+
+				int random = rand() % 2; //retourne un nombre entre 0 et 1
+
+				printf("random number: %i\n", random);
+
+				printf("on attend\n");
+
+				EcranTemporaire(); //On fait attendre le joueur entre chaque jeu
+
+				printf("on attend plus\n");
+
+				if(random == 0){
+					mini_jeu_ballon(&status);
+				}
+				else if(random == 1){
+					mini_jeu_coupe(&status);
+				}
+
+				//encore à faire: vider l'écran du dessous et actualiser celui du dessus
+
 				swiWaitForVBlank(); //nécessaire?
 			}
 

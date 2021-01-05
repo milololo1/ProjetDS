@@ -1,5 +1,13 @@
 #include "coupe.h"
 
+#include <nds.h>
+#include <stdio.h>
+#include <stdbool.h>
+
+#include "ballon.h"
+#include "spriteBallon.h"
+#include "Graphics.h"
+
 void configuration_objectif_coupe(){
 
 	int tileX = 18;
@@ -12,7 +20,7 @@ void configuration_objectif_coupe(){
 }
 
 
-void mini_jeu_coupe(){
+void mini_jeu_coupe(game_status* status){
 
 	configuration_objectif_coupe();
 
@@ -28,24 +36,23 @@ void mini_jeu_coupe(){
 
 		scanKeys();
 		touchRead(&touch);
+
+		printf("x: %i, y: %i\n", touch.px, touch.py);
+
 		if(touch.px || touch.py){ //si l'écran a été touché
 			touchedPositions[SCREEN_WIDTH*touch.py + touch.px] = 1;
-
-			printf("x: %i, y: %i\n", touch.px, touch.py);
 
 			//on regarde si on a coupé qqch:
 			int compteur = 0;
 			int i;
 			for(i = 0; i < 8*8*4; ++i){ //on traverse le bloc que constitue l'elem à couper
-				//compteur += touchedPositions[18*8 + qqch];
+				compteur += touchedPositions[i%16 + 256*(i/16)]; //TODO: trouver la bonne position de l'objet
 			}
 			if(compteur >= 4){ //totalement arbitraire, permet de savoir si on a assez traversé un objet
+				printf("yeeees\n");
 				success = true;
 			}
 		}
-
-
-
 
 	}
 }
