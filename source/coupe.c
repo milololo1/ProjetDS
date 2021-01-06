@@ -1,12 +1,8 @@
-#include "coupe.h"
-
 #include <nds.h>
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "ballon.h"
-#include "spriteBallon.h"
-#include "Graphics.h"
+#include "coupe.h"
 
 void configuration_objectif_coupe(){
 
@@ -17,7 +13,7 @@ void configuration_objectif_coupe(){
 	BG_MAP_RAM(1)[32*(tileY+1) + tileX] = 2+OFF_COEUR;
 	BG_MAP_RAM(1)[32*(tileY+1) + tileX+1] = 3+OFF_COEUR;
 
-	printf("config ok\n");
+	//printf("config ok\n");
 }
 
 
@@ -32,6 +28,11 @@ void mini_jeu_coupe(game_status* status){
 
 	int touchedPositions[SCREEN_WIDTH*SCREEN_HEIGHT]; //contient toute les positions déjà touchée
 
+	int j;
+	for(j = 0; j < SCREEN_WIDTH*SCREEN_HEIGHT; ++j){
+		touchedPositions[j] = 0;
+	}
+
 	//consoleDemoInit();
 
 	touchPosition touch;
@@ -40,7 +41,7 @@ void mini_jeu_coupe(game_status* status){
 		scanKeys();
 		touchRead(&touch);
 
-		printf("x: %i, y: %i\n", touch.px, touch.py);
+		//printf("x: %i, y: %i\n", touch.px, touch.py);
 
 		if(touch.px || touch.py){ //si l'écran a été touché
 			touchedPositions[SCREEN_WIDTH*touch.py + touch.px] = 1;

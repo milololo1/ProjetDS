@@ -12,6 +12,8 @@
 #include "ballon.h"
 #include "coupe.h"
 
+#include "two.h"
+
 #include <maxmod9.h>
 #include "soundbank.h"
 #include "soundbank_bin.h"
@@ -79,6 +81,8 @@ int main(void) {
 	//upper_cacher_barre();
 	//upper_afficher_barre(7);
 
+	consoleDemoInit();
+
 	//mini_jeu_ballon(&status);
 	//mini_jeu_coupe(&status);
 
@@ -92,7 +96,7 @@ int main(void) {
 	mmLoad(MOD_TEST1);
 	mmStart(MOD_TEST1, MM_PLAY_LOOP);*/
 
-	consoleDemoInit();
+
     //printf("\nTemplate nds\n");
 
 	//while général qui contient tout le déroulement du jeu

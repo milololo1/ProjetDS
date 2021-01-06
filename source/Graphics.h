@@ -2,6 +2,9 @@
 
 #include <nds.h>
 
+#define SCREEN_WIDTH	256
+#define	SCREEN_HEIGHT	192
+
 //Offset des tiles dans upperTiles
 #define OFF_CHIFFRES_LIGNE1 1;
 #define OFF_CHIFFRES_LIGNE2 22;
