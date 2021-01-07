@@ -99,7 +99,7 @@ int main(void) {
 
 	//while général qui contient tout le déroulement du jeu
 	while(1){
-		printf("press A button\n");
+		//printf("press A button\n");
 		/*
 		*
 		* ici création du menu (bouton pour lancer le jeu + bg si nécessaire)
@@ -125,6 +125,7 @@ int main(void) {
 					 *
 					 */
 
+				/*
 				printf("on utilise le random\n");
 
 				int random = rand() % 2; //retourne un nombre entre 0 et 1
@@ -157,7 +158,9 @@ int main(void) {
 				upper_afficher_vie(&status);
 				upper_afficher_barre(32);
 				upper_afficher_compteur(status.score);
+				 */
 
+				mini_jeu_ballon(&status);
 				swiWaitForVBlank(); //nécessaire?
 			}
 

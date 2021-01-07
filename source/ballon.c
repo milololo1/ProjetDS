@@ -53,19 +53,27 @@ void configuration_obstacle(){
 void configuration_objectif(){
 	int tileX = 18;
 	int tileY = 18;
-	BG_MAP_RAM(1)[32*tileY + tileX] = OFF_COEUR;
-	BG_MAP_RAM(1)[32*tileY + tileX+1] = 1+OFF_COEUR;
-	BG_MAP_RAM(1)[32*(tileY+1) + tileX] = 2+OFF_COEUR;
-	BG_MAP_RAM(1)[32*(tileY+1) + tileX+1] = 3+OFF_COEUR;
+	BG_MAP_RAM(1)[32*tileY + tileX] = OFF_OBJECTIF;
+	BG_MAP_RAM(1)[32*tileY + tileX+1] = 1+OFF_OBJECTIF;
+	BG_MAP_RAM(1)[32*(tileY+1) + tileX] = 2+OFF_OBJECTIF;
+	BG_MAP_RAM(1)[32*(tileY+1) + tileX+1] = 3+OFF_OBJECTIF;
 }
 
 
 void mini_jeu_ballon(game_status* status)
 {
 	//Configuration des sprites et initialisation des graphiques
-	configuration_Sprites();
-	configuration_obstacle();
+	//configuration_Sprites();
+	//configuration_obstacle();
 	configuration_objectif();
+
+	//Afficher bellowTiles
+	int i, j;
+	for (j=0; j<32; ++j){
+		for (i=0; i<32; ++i){
+			BG_MAP_RAM(1)[32*j + i] = 32*j + i;
+		}
+	}
 
 	//test
 	//BG_MAP_RAM(1)[32*4 + 4] = 6;
@@ -76,7 +84,7 @@ void mini_jeu_ballon(game_status* status)
 	status->minigame_current_total_time = 320; //arbitraire, à modifier avec la vitesse
 	status->minigame_current_time = 320;
 
-	AnnexeCounter(status->minigame_current_total_time, status);
+	//AnnexeCounter(status->minigame_current_total_time, status);
 
 	//Position
 	int x = 0, y = 0, keys;
@@ -122,7 +130,7 @@ void mini_jeu_ballon(game_status* status)
 			status->score->nombre += 1;
 		}
 	}
-
+/*
 	oamSet(&oamMain, 	// oam handler
 		    0,				// Number of sprite
 		    x, y,			// Coordinates
@@ -137,6 +145,7 @@ void mini_jeu_ballon(game_status* status)
 		    false, false,	// Horizontal or vertical flip
 		    false			// Mosaic
 		    );
-
+*/
 	oamUpdate(&oamMain);
+
 }

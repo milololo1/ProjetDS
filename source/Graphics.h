@@ -12,6 +12,11 @@
 #define OFF_COEUR 62;
 #define OFF_BARRE_COULEUR 66;
 
+//Offset des tiles dans belowTiles
+#define OFF_PIQUE_SIMPLE 1;
+#define OFF_OBJECTIF 7;
+
+
 /*
 	This function does not receive any input parameter. It initializes the main
 	graphical engine to be used.
