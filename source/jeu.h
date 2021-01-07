@@ -33,7 +33,7 @@ typedef struct {
 	compteur* difficulte; //0, 1, 2 (défini la difficulté du niveau)
 	compteur* vitesse; //peut aller vers l'infini (défini le temps donné au joueur
 
-	int minigame_current_total_time; //en dixième de secondes (pour les deux)
+	int minigame_current_total_time; //en centième de secondes (pour les deux)
 	int minigame_current_time;
 } game_status;
 

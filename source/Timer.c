@@ -5,11 +5,11 @@ int counter0 = 0;
 int counter1 = 0;
 
 void ISR_increment0(){
-		counter0++;
+	counter0++;
 }
 
 void ISR_increment1(){
-		++counter1;
+	++counter1;
 }
 
 //à utiliser quand on veut attendre (et rien faire d'autre)
@@ -24,11 +24,8 @@ void Attendre(int secondes){
 
 	irqEnable(IRQ_TIMER0);
 
-	printf("timer setup, let's go on attend\n");
-
 	while(counter0 < secondes){
 		swiWaitForVBlank();
-		//printf("alerte");
 	}
 
 	irqDisable(IRQ_TIMER0);
@@ -37,11 +34,21 @@ void Attendre(int secondes){
 }
 
 //permet de mettre un counter pendant un minijeu
-void AnnexeCounter(int dsecondes, game_status status){ //dixième de secondes
+void AnnexeCounter(int csecondes, game_status* status){ //centième de secondes
 
 	int counter1 = 0;
 
-	TIMER_DATA(1) = TIMER_FREQ_1024(10);
+	TIMER_DATA(1) = TIMER_FREQ_1024(100);
 	TIMER1_CR = TIMER_ENABLE | TIMER_DIV_1024 | TIMER_IRQ_REQ;
 	irqSet(IRQ_TIMER1, &ISR_increment1);
+
+	while(counter1 < csecondes){
+		swiWaitForVBlank();
+		status->minigame_current_time = status->minigame_current_total_time - counter1;
+	}
+
+	irqDisable(IRQ_TIMER1);
+
+	counter1 = 0;
+
 }

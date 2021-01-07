@@ -26,10 +26,10 @@ void mini_jeu_coupe(game_status* status){
 	bool echec = false;
 	bool success = false;
 
-	int touchedPositions[SCREEN_WIDTH*SCREEN_HEIGHT]; //contient toute les positions déjà touchée
+	int touchedPositions[16*16]; //contient toute les positions déjà touchée
 
 	int j;
-	for(j = 0; j < SCREEN_WIDTH*SCREEN_HEIGHT; ++j){
+	for(j = 0; j < 16*16; ++j){
 		touchedPositions[j] = 0;
 	}
 
@@ -41,20 +41,20 @@ void mini_jeu_coupe(game_status* status){
 		scanKeys();
 		touchRead(&touch);
 
-		//printf("x: %i, y: %i\n", touch.px, touch.py);
+		printf("x: %i, y: %i\n", touch.px, touch.py);
 
-		if(touch.px || touch.py){ //si l'écran a été touché
-			touchedPositions[SCREEN_WIDTH*touch.py + touch.px] = 1;
+		if(touch.px > 8*18 && touch.px < 8*20 && touch.py > 8*18 && touch.py < 8*20){ //si l'écran a été touché
+			touchedPositions[(touch.py%(8*18))*16 + (touch.px%(8*18))] = 1;
 
 			//on regarde si on a coupé qqch:
 			int compteur = 0;
 			int i;
-			for(i = 0; i < 8*8*4; ++i){ //on traverse le bloc que constitue l'elem à couper
-				compteur += touchedPositions[i%16 + 256*(i/16)]; //TODO: trouver la bonne position de l'objet
+			for(i = 0; i < 16*16; ++i){ //on traverse le bloc que constitue l'elem à couper
+				compteur += touchedPositions[i]; //TODO: trouver la bonne position de l'objet
 			}
 			if(compteur >= 4){ //totalement arbitraire, permet de savoir si on a assez traversé un objet
-				printf("yeeees\n");
 				success = true;
+				status->score->nombre += 1;
 			}
 		}
 

@@ -12,8 +12,6 @@
 #include "ballon.h"
 #include "coupe.h"
 
-#include "two.h"
-
 #include <maxmod9.h>
 #include "soundbank.h"
 #include "soundbank_bin.h"
@@ -66,11 +64,11 @@ int main(void) {
 	upper_ini_ingame_screen();
 	below_ini_ingame_screen();
 
-	status.score->nombre = 610;
+	status.score->nombre = 0;
 	upper_afficher_compteur(status.score);
-	status.difficulte->nombre = 2;
+	status.difficulte->nombre = 1;
 	upper_afficher_compteur(status.difficulte);
-	status.vitesse->nombre = 34;
+	status.vitesse->nombre = 1;
 	upper_afficher_compteur(status.vitesse);
 	
 	update_vie(&status, 2);
@@ -81,7 +79,7 @@ int main(void) {
 	//upper_cacher_barre();
 	//upper_afficher_barre(7);
 
-	consoleDemoInit();
+	//consoleDemoInit();
 
 	//mini_jeu_ballon(&status);
 	//mini_jeu_coupe(&status);
@@ -148,6 +146,17 @@ int main(void) {
 				}
 
 				//encore à faire: vider l'écran du dessous et actualiser celui du dessus
+
+				int i, j;
+				for(j=0; j<32; ++j){
+					for(i=0; i<32; ++i){
+						BG_MAP_RAM(1)[32*j + i] = 0;
+					}
+				}
+
+				upper_afficher_vie(&status);
+				upper_afficher_barre(32);
+				upper_afficher_compteur(status.score);
 
 				swiWaitForVBlank(); //nécessaire?
 			}

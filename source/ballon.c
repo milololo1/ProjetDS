@@ -13,6 +13,13 @@
 #define OBSTACLE_2 (x > 80 && x <= 96 && y > 80 && y <= 96)
 #define OBJECTIF (x > 120 && x <= 136 && y > 120 && y <= 136)
 
+void update_time_ballon(game_status* status){ //fonction qui tient compte du temps pour afficher la barre
+
+	float delta = status->minigame_current_total_time / status->minigame_current_time;
+	int barre_size = 32*delta;
+	upper_afficher_barre(barre_size);
+}
+
 void configuration_Sprites()
 {
 	//Initialisation de sprite manager and the engine
@@ -66,9 +73,16 @@ void mini_jeu_ballon(game_status* status)
 	bool echec = false;
 	bool succes = false;
 
+	status->minigame_current_total_time = 320; //arbitraire, à modifier avec la vitesse
+	status->minigame_current_time = 320;
+
+	AnnexeCounter(status->minigame_current_total_time, status);
+
 	//Position
 	int x = 0, y = 0, keys;
 	while(!echec && !succes){
+
+		update_time_ballon(status);
 
 	    //Read held keys
 	    scanKeys();
@@ -100,10 +114,29 @@ void mini_jeu_ballon(game_status* status)
 
 		if(OBSTACLE_1 || OBSTACLE_2){
 			echec = true;
+			update_vie(status, status->vie_restante-1);
 		}
 
 		if(OBJECTIF){
 			succes = true;
+			status->score->nombre += 1;
 		}
 	}
+
+	oamSet(&oamMain, 	// oam handler
+		    0,				// Number of sprite
+		    x, y,			// Coordinates
+		    0,				// Priority
+		    0,				// Palette to use
+		    SpriteSize_16x32,			// Sprite size
+		    SpriteColorFormat_256Color,	// Color format
+		    gfx_ballon,		// Loaded graphic to display
+		    -1,				// Affine rotation to use (-1 none)
+		    false,			// Double size if rotating
+		    true,			// Hide this sprite
+		    false, false,	// Horizontal or vertical flip
+		    false			// Mosaic
+		    );
+
+	oamUpdate(&oamMain);
 }
