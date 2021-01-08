@@ -3,8 +3,11 @@
 #include <nds.h>
 #include "jeu.h"
 
+
 void Timer_init();
+
+void ISR_increment1();
 
 void Attendre(int secondes);
 
-void AnnexeCounter(int csecondes, game_status* status);
+void AnnexeCounter(game_status* status);

@@ -159,6 +159,8 @@ int main(void) {
 				//Actuallise l'affichage de l ecran du dessus
 				upper_afficher_vie(&status);
 				upper_afficher_compteur(status.score);
+				upper_afficher_compteur(status.difficulte);
+				upper_afficher_compteur(status.vitesse);
 				upper_afficher_barre(32);
 				swiWaitForVBlank();
 

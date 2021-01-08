@@ -13,6 +13,9 @@
 #define	BALLON_HITBOX_HEIGHT 16
 #define	BALLON_STARTX 16
 #define	BALLON_STARTY 8*20
+#define	TEMPS_MIN 200
+#define	TEMPS_MAX 2000
+
 
 //pointeur sur le sprite ballon
 u16* gfx_ballon;

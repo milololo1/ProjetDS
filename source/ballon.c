@@ -4,15 +4,13 @@
 
 #include "ballon.h"
 #include "spriteBallon.h"
+#include "spriteBallonCasse.h"
 #include "Graphics.h"
 #include "Timer.h"
 
-
-void update_time_ballon(game_status* status){ //fonction qui tient compte du temps pour afficher la barre
-
-	float delta = status->minigame_current_total_time / status->minigame_current_time;
-	int barre_size = 32*delta;
-	upper_afficher_barre(barre_size);
+void configuration_temp_total(game_status* status){
+	status->minigame_total_time = TEMPS_MAX/(status->vitesse->nombre) + TEMPS_MIN;
+	AnnexeCounter(status);
 }
 
 void configuration_Sprites()
@@ -87,17 +85,17 @@ void configuration_obstacles(obstacle** head, int difficulte){
 			break;
 
 		case 2:
-			configuration_block_d_obstacles(head, 5, 3, 10, 10, 6);
-			configuration_block_d_obstacles(head, 17, 1, 10, 10, 6);
-			configuration_block_d_obstacles(head, 5, 13, 10, 10, 6);
-			configuration_block_d_obstacles(head, 17, 11, 10, 10, 6);
+			configuration_block_d_obstacles(head, 5, 3, 10, 10, 5);
+			configuration_block_d_obstacles(head, 17, 1, 10, 10, 5);
+			configuration_block_d_obstacles(head, 5, 13, 10, 10, 5);
+			configuration_block_d_obstacles(head, 17, 11, 10, 10, 5);
 			break;
 
 		default: //3 ou plus
-			configuration_block_d_obstacles(head, 5, 3, 10, 10, 9);
-			configuration_block_d_obstacles(head, 17,1, 10, 10, 9);
-			configuration_block_d_obstacles(head, 5, 13, 10, 10, 9);
-			configuration_block_d_obstacles(head, 17, 11, 10, 10, 9);
+			configuration_block_d_obstacles(head, 5, 3, 10, 10, 7);
+			configuration_block_d_obstacles(head, 17,1, 10, 10, 7);
+			configuration_block_d_obstacles(head, 5, 13, 10, 10, 7);
+			configuration_block_d_obstacles(head, 17, 11, 10, 10, 7);
 	}
 }
 
@@ -138,10 +136,10 @@ int collision_obstacle(obstacle* head, int ballonX, int ballonY){
 	obstacle* it = head;
 	int i;
 	for(i=0; it!=NULL && i<MAX_OBSTACLES; ++i){
-		if((ballonX < ((it->tileX)*8 + 14))
-	    	&& (ballonY < (it->tileY)*8 + 14)
-	    	&& (ballonX  > (it->tileX)*8 - 14)
-	    	&& (ballonY  > (it->tileY)*8 - 14)){
+		if((ballonX < ((it->tileX)*8 + 13))
+	    	&& (ballonY < (it->tileY)*8 + 13)
+	    	&& (ballonX  > (it->tileX)*8 - 13)
+	    	&& (ballonY  > (it->tileY)*8 - 13)){
 	    		return 1;
 	    	}
 		it = it->next;
@@ -150,10 +148,10 @@ int collision_obstacle(obstacle* head, int ballonX, int ballonY){
 }
 
 int collision_objectif(int ballonX, int ballonY){
-	return ((ballonX < (OBJECTIF_TILEX*8 + 12))
-    		&& (ballonY < (OBJECTIF_TILEY*8 + 12))
-    		&& (ballonX  > (OBJECTIF_TILEX*8 - 12))
-    		&& (ballonY  > (OBJECTIF_TILEY*8 - 12)));
+	return ((ballonX < (OBJECTIF_TILEX*8 + 10))
+    		&& (ballonY < (OBJECTIF_TILEY*8 + 10))
+    		&& (ballonX  > (OBJECTIF_TILEX*8 - 10))
+    		&& (ballonY  > (OBJECTIF_TILEY*8 - 10)));
 }
 
 void mini_jeu_ballon(game_status* status)
@@ -161,10 +159,15 @@ void mini_jeu_ballon(game_status* status)
 
 	//Inisialisation variables
 	int ballonX = BALLON_STARTX, ballonY = BALLON_STARTY, keys;
+	bool echec = false;
+	bool succes = false;
+
+	//Initialisation temps
+	configuration_temp_total(status);
 
 	//Initialisation des obstacles
 	obstacle* obstacles_head = NULL;
-	configuration_obstacles(&obstacles_head, 2);
+	configuration_obstacles(&obstacles_head, status->difficulte->nombre);
 
 	//Affichage
 	afficher_bord();
@@ -174,19 +177,11 @@ void mini_jeu_ballon(game_status* status)
 	//Configuration des sprites et initialisation des graphiques
 	configuration_Sprites();
 
-
-	bool echec = false;
-	bool succes = false;
-
-	status->minigame_current_total_time = 320; //arbitraire, à modifier avec la vitesse
-	status->minigame_current_time = 320;
-
-	//AnnexeCounter(status->minigame_current_total_time, status);
-
-
+	//Boucle principal du mini jeu
 	while(!echec && !succes){
 
-		update_time_ballon(status);
+		//Affiche la barre du temps
+		upper_afficher_barre((int)(32*status->minigame_left_time/status->minigame_total_time));
 
 	    //Read held keys
 	    scanKeys();
@@ -216,20 +211,27 @@ void mini_jeu_ballon(game_status* status)
 	    //Update the sprites
 		oamUpdate(&oamMain);
 
-		if(collision_bord(ballonX, ballonY) || collision_obstacle(obstacles_head, ballonX, ballonY)){
+		if(collision_bord(ballonX, ballonY) || collision_obstacle(obstacles_head, ballonX, ballonY) || status->minigame_left_time <= 0){
 			echec = true;
 			update_vie(status, status->vie_restante-1);
+			if(collision_bord(ballonX, ballonY) || collision_obstacle(obstacles_head, ballonX, ballonY)){
+				//Copie dans la memoire de la bitmap et palette du ballon casse
+				swiCopy(spriteBallonCassePal, SPRITE_PALETTE, spriteBallonCassePalLen/2);
+				swiCopy(spriteBallonCasseTiles, gfx_ballon, spriteBallonCasseTilesLen/2);
+			}
 		}
 
 		if(collision_objectif(ballonX, ballonY)){
 			succes = true;
 			afficher_objectif_vert();
 			status->score->nombre += 1;
+			status->difficulte->nombre = (status->difficulte->nombre % 3) + 1;
+			if(status->difficulte->nombre == 1) status->vitesse->nombre += 1;
 		}
 	}
 
-	//1 seconde d'attente afin de pouvoir constater le resultat du jeu
-	Attendre(1);
+	//2 seconde d'attente afin de pouvoir constater le resultat du jeu
+	Attendre(2);
 
 	//cacher le sprite
 	oamSet(&oamMain, 	     // oam handler
