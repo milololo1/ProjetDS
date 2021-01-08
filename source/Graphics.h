@@ -31,6 +31,7 @@ void Graphics_ini();
 
 //++ A commenter
 void upper_ini_ingame_screen();
+void below_ini_title_screen();
 void below_ini_wait_screen();
 void below_ini_ingame_screen();
 

@@ -2,6 +2,7 @@
 #include "cafeteriaTest.h"
 #include "mapImpostorTest.h"
 #include "upper_ingameTest.h"
+#include "titleScreenTest.h"
 #include "belowTiles.h"
 #include "upperTiles.h"
 #include "cafeteriaTest.h"
@@ -239,8 +240,7 @@ void upper_cacher_barre()
 	}
 }
 
-
-void below_ini_wait_screen(){
+void below_ini_transi_screen(){
 	/*
 	 * Mise a disposition de la RAM memory bank pour le main engine
 	 */
@@ -256,17 +256,29 @@ void below_ini_wait_screen(){
     REG_BG2PB = 0;
     REG_BG2PD = 256;
 
-	//Copie dans la memoire de la map et des palettes.
-	dmaCopy(cafeteriaTestBitmap, BG_BMP_RAM(24), cafeteriaTestBitmapLen);
-	dmaCopy(cafeteriaTestPal, BG_PALETTE, cafeteriaTestPalLen);
-
-
 	/*
 	 * activation des backgrounds
 	 */
 	REG_DISPCNT = MODE_5_2D | DISPLAY_BG2_ACTIVE;
 }
 
+void below_ini_wait_screen(){
+
+	below_ini_transi_screen();
+
+	//Copie dans la memoire de la map et des palettes.
+	dmaCopy(cafeteriaTestBitmap, BG_BMP_RAM(24), cafeteriaTestBitmapLen);
+	dmaCopy(cafeteriaTestPal, BG_PALETTE, cafeteriaTestPalLen);
+}
+
+void below_ini_title_screen(){
+
+	below_ini_transi_screen();
+
+	//Copie dans la memoire de la map et des palettes.
+	dmaCopy(titleScreenTestBitmap, BG_BMP_RAM(24), titleScreenTestBitmapLen);
+	dmaCopy(titleScreenTestPal, BG_PALETTE, titleScreenTestPalLen);
+}
 
 void below_ini_ingame_screen()
 {

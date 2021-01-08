@@ -47,7 +47,6 @@ void EcranTemporaire(){
 
 	//Affiche le screen des mini jeux
 	below_ini_ingame_screen();
-
 }
 
 
@@ -84,7 +83,7 @@ int main(void) {
 	Graphics_ini();
 	upper_ini_ingame_screen();
 	below_ini_ingame_screen();
-	below_ini_wait_screen();
+	below_ini_title_screen();
 
 
 	status.score->nombre = 0;
@@ -193,6 +192,10 @@ int main(void) {
 
 				//swiWaitForVBlank(); //nécessaire?
 			//}
+
+
+			below_ini_title_screen();
+
 
 			upper_afficher_vie(&status);
 			upper_afficher_compteur(status.score);
