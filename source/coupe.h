@@ -6,6 +6,11 @@
 #include "Graphics.h"
 #include "jeu.h"
 
-void configuration_objectif_coupe();
+typedef struct {
+	int tileX;
+	int tileY;
+	int touchedPosition[16*16];
+	int compteur;
+} objectif_coupe;
 
 void mini_jeu_coupe(game_status* status);
