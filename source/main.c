@@ -152,11 +152,10 @@ int main(void) {
 					mini_jeu_ballon(&status);
 				}
 				else{
-					printf("rentre ici au moins bordel\n");//joli commentaire, j'aime, pouce bleu.
 					mini_jeu_coupe(&status);
 				}
 
-				//Actuallise l'affichage de l ecran du dessus
+				//Actualise l'affichage de l ecran du dessus
 				upper_afficher_vie(&status);
 				upper_afficher_compteur(status.score);
 				upper_afficher_compteur(status.difficulte);
@@ -164,9 +163,15 @@ int main(void) {
 				upper_afficher_barre(32);
 				swiWaitForVBlank();
 
+
 			}
 
-			while(!recharge_du_jeu){
+			status.score->nombre = 0;
+			status.difficulte->nombre = 1;
+			status.vitesse->nombre = 1;
+			status.vie_restante = VIE_MAX;
+
+			//while(!handleKeysMenu()){
 					/*
 					 *
 					 *
@@ -175,8 +180,15 @@ int main(void) {
 					 *
 					 *
 					 */
-				swiWaitForVBlank(); //nécessaire?
-			}
+
+				//swiWaitForVBlank(); //nécessaire?
+			//}
+
+			upper_afficher_vie(&status);
+			upper_afficher_compteur(status.score);
+			upper_afficher_compteur(status.difficulte);
+			upper_afficher_compteur(status.vitesse);
+			upper_afficher_barre(32);
 	}
 
 }
