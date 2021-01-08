@@ -9,8 +9,6 @@
 #include "jeu.h"
 
 
-#include "spriteBallon.h"
-
 #define TIME_COLOR_0 RGB15(15,15,15)
 #define TIME_COLOR_1 RGB15(0,31,0)
 #define TIME_COLOR_2 RGB15(0,0,31)
@@ -242,6 +240,34 @@ void upper_cacher_barre()
 }
 
 
+void below_ini_wait_screen(){
+	/*
+	 * Mise a disposition de la RAM memory bank pour le main engine
+	 */
+	// Configure the corresponding VRAM-D memory bank correctly
+	VRAM_D_CR = VRAM_ENABLE	| VRAM_D_MAIN_BG;
+
+	//Configure background BG2 en rotoscale mode avec 8-bit pixels
+	BGCTRL[2] = BG_BMP_BASE(24) | BgSize_B8_256x256;
+
+    //Set up affine matrix
+    REG_BG2PA = 256;
+    REG_BG2PC = 0;
+    REG_BG2PB = 0;
+    REG_BG2PD = 256;
+
+	//Copie dans la memoire de la map et des palettes.
+	dmaCopy(cafeteriaTestBitmap, BG_BMP_RAM(24), cafeteriaTestBitmapLen);
+	dmaCopy(cafeteriaTestPal, BG_PALETTE, cafeteriaTestPalLen);
+
+
+	/*
+	 * activation des backgrounds
+	 */
+	REG_DISPCNT = MODE_5_2D | DISPLAY_BG2_ACTIVE;
+}
+
+
 void below_ini_ingame_screen()
 {
 	/*
@@ -256,7 +282,6 @@ void below_ini_ingame_screen()
 	/*
 	 * Configuration du background BG3 en tiled mode, 32x32 grille and 256 couleurs
 	 */
-
 	//cours| cours | 0*2kb | 1*16kb
 	BGCTRL[3] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(0) | BG_TILE_BASE(1);
 
@@ -269,7 +294,6 @@ void below_ini_ingame_screen()
 	/*
 	 * Configuration du background BG2 en tiled mode, 32x32 grille and 256 couleurs
 	 */
-
 	//cours| cours | 1*2kb | 2*16kb
 	BGCTRL[2] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(1) | BG_TILE_BASE(2);
 
@@ -291,42 +315,7 @@ void below_ini_ingame_screen()
 
 
 	/*
-	 * Configuration du background BG1 en tiled mode, 32x32 grille and 256 couleurs
-	 */
-/*
-	//cours| cours | 0*2kb | 1*16kb
-	BGCTRL[1] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(2) | BG_TILE_BASE(3);
-
-	//Copie dans la memoire des tiles, map et palettes.
-	dmaCopy(cafeteriaTestTiles, BG_TILE_RAM(3), cafeteriaTestTilesLen);
-	for(i=32; i<cafeteriaTestTilesLen; i++){
-		BG_TILE_RAM(3)[i] += (mapImpostorTestPalLen + belowTilesPalLen) << 8 | (mapImpostorTestPalLen + belowTilesPalLen);
-		//BG_TILE_RAM(3)[i] += belowTilesPalLen << 8 | belowTilesPalLen;
-		//BG_TILE_RAM(3)[i] += (mapImpostorTestPalLen + belowTilesPalLen)/8;
-	}
-	dmaCopy(cafeteriaTestMap, BG_MAP_RAM(2), cafeteriaTestMapLen);
-	dmaCopy(cafeteriaTestPal, &BG_PALETTE[mapImpostorTestPalLen + belowTilesPalLen], cafeteriaTestPalLen);
-	//dmaCopy(cafeteriaTestPal, BG_PALETTE, cafeteriaTestPalLen);
-
-
-	//test remplacer les tile par les pallette
-	int x, y;
-	for(x=0; x<255; ++x){
-		for(y=0; y<1024; ++y){
-			BG_TILE_RAM(1)[x] = BG_PALETTE[x];
-		}
-	}
-
-	//Afficher toute les tiles
-	for(j=0; j<SCREEN_TILE_HEIGHT; ++j){
-		for(i=0; i<SCREEN_TILE_WIDTH; ++i){
-			//BG_MAP_RAM(2)[32*j + i] = 32*j + i;
-		}
-	}*/
-
-
-	/*
-	 * activation background 3 //A ACTIVER DANS LE MAIN???
+	 * activation des backgrounds
 	 */
 	REG_DISPCNT = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE;
 }

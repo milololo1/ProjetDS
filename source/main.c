@@ -16,13 +16,20 @@
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
+
+#include "mapImpostorTest.h"
+#include "cafeteriaTest.h"
+#include "belowTiles.h"
+
+
+
 /*
  * Affiche qqch pendant quelques secondes, pour que le joueur
  * se prépare au prochain mini-jeu
  */
 void EcranTemporaire(){
-	//REG_DISPCNT = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE | DISPLAY_BG1_ACTIVE;
-	//REG_DISPCNT = REG_DISPCNT ^ DISPLAY_BG1_ACTIVE;	//Background d'attente activation
+	//Affiche le waiting screen
+	below_ini_wait_screen();
 
 	//reinitialiser les tiles en transparant
 	int i, j;
@@ -38,8 +45,9 @@ void EcranTemporaire(){
 		printf("%i\n", i);
 	}
 
-	//REG_DISPCNT = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE;
-	//REG_DISPCNT = REG_DISPCNT ^ DISPLAY_BG1_ACTIVE;	//Background d'attente desactivation
+	//Affiche le screen des mini jeux
+	below_ini_ingame_screen();
+
 }
 
 
@@ -76,6 +84,8 @@ int main(void) {
 	Graphics_ini();
 	upper_ini_ingame_screen();
 	below_ini_ingame_screen();
+	below_ini_wait_screen();
+
 
 	status.score->nombre = 0;
 	upper_afficher_compteur(status.score);
