@@ -21,12 +21,25 @@
  * se prépare au prochain mini-jeu
  */
 void EcranTemporaire(){
-	int i;
+	//REG_DISPCNT = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE | DISPLAY_BG1_ACTIVE;
+	//REG_DISPCNT = REG_DISPCNT ^ DISPLAY_BG1_ACTIVE;	//Background d'attente activation
+
+	//reinitialiser les tiles en transparant
+	int i, j;
+	for(j=0; j<SCREEN_TILE_HEIGHT; ++j){
+		for(i=0; i<SCREEN_TILE_WIDTH; ++i){
+			BG_MAP_RAM(1)[32*j + i] = 0;
+		}
+	}
+
+	//Attente
 	for(i = 1; i <= 3; ++i){
 		Attendre(1);
 		printf("%i\n", i);
 	}
 
+	//REG_DISPCNT = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE;
+	//REG_DISPCNT = REG_DISPCNT ^ DISPLAY_BG1_ACTIVE;	//Background d'attente desactivation
 }
 
 
@@ -71,7 +84,7 @@ int main(void) {
 	status.vitesse->nombre = 1;
 	upper_afficher_compteur(status.vitesse);
 	
-	update_vie(&status, 2);
+	update_vie(&status, 3);
 	upper_afficher_vie(&status);
 	//upper_cacher_vie(&status);
 
@@ -124,44 +137,31 @@ int main(void) {
 					 *
 					 *
 					 */
+				//printf("on utilise le random\n");
+				//int random = rand() % 2; //retourne un nombre entre 0 et 1
+				int random = 0;
+				//printf("random number: %i\n", random);
 
-				/*
-				printf("on utilise le random\n");
 
-				int random = rand() % 2; //retourne un nombre entre 0 et 1
-
-				printf("random number: %i\n", random);
-
-				printf("on attend\n");
-
+				//printf("on attend\n");
 				EcranTemporaire(); //On fait attendre le joueur entre chaque jeu
+				//printf("on attend plus\n");
 
-				printf("on attend plus\n");
 
 				if(random == 0){
 					mini_jeu_ballon(&status);
 				}
 				else{
-					printf("rentre ici au moins bordel\n");
+					printf("rentre ici au moins bordel\n");//joli commentaire, j'aime, pouce bleu.
 					mini_jeu_coupe(&status);
 				}
 
-				//encore à faire: vider l'écran du dessous et actualiser celui du dessus
-
-				int i, j;
-				for(j=0; j<32; ++j){
-					for(i=0; i<32; ++i){
-						BG_MAP_RAM(1)[32*j + i] = 0;
-					}
-				}
-
+				//Actuallise l'affichage de l ecran du dessus
 				upper_afficher_vie(&status);
-				upper_afficher_barre(32);
 				upper_afficher_compteur(status.score);
-				 */
+				upper_afficher_barre(32);
+				swiWaitForVBlank();
 
-				mini_jeu_ballon(&status);
-				swiWaitForVBlank(); //nécessaire?
 			}
 
 			while(!recharge_du_jeu){

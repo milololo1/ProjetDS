@@ -4,8 +4,10 @@
 #include "upper_ingameTest.h"
 #include "belowTiles.h"
 #include "upperTiles.h"
+#include "cafeteriaTest.h"
 #include "costumTiles.h"
 #include "jeu.h"
+
 
 #include "spriteBallon.h"
 
@@ -277,8 +279,8 @@ void below_ini_ingame_screen()
 	for(i=32; i<belowTilesTilesLen; i++){
 		BG_TILE_RAM(2)[i] += mapImpostorTestPalLen << 8 | mapImpostorTestPalLen;
 	}
-	dmaCopy(belowTilesMap, BG_MAP_RAM(1), upperTilesMapLen);
-	dmaCopy(belowTilesPal, &BG_PALETTE[upper_ingameTestPalLen], belowTilesPalLen);
+	dmaCopy(belowTilesMap, BG_MAP_RAM(1), belowTilesMapLen);
+	dmaCopy(belowTilesPal, &BG_PALETTE[mapImpostorTestPalLen], belowTilesPalLen);
 
 	//Initialisation de la map en transparant
 	for(j=0; j<32; ++j){
@@ -286,6 +288,41 @@ void below_ini_ingame_screen()
 			BG_MAP_RAM(1)[32*j + i] = 0;
 		}
 	}
+
+
+	/*
+	 * Configuration du background BG1 en tiled mode, 32x32 grille and 256 couleurs
+	 */
+/*
+	//cours| cours | 0*2kb | 1*16kb
+	BGCTRL[1] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(2) | BG_TILE_BASE(3);
+
+	//Copie dans la memoire des tiles, map et palettes.
+	dmaCopy(cafeteriaTestTiles, BG_TILE_RAM(3), cafeteriaTestTilesLen);
+	for(i=32; i<cafeteriaTestTilesLen; i++){
+		BG_TILE_RAM(3)[i] += (mapImpostorTestPalLen + belowTilesPalLen) << 8 | (mapImpostorTestPalLen + belowTilesPalLen);
+		//BG_TILE_RAM(3)[i] += belowTilesPalLen << 8 | belowTilesPalLen;
+		//BG_TILE_RAM(3)[i] += (mapImpostorTestPalLen + belowTilesPalLen)/8;
+	}
+	dmaCopy(cafeteriaTestMap, BG_MAP_RAM(2), cafeteriaTestMapLen);
+	dmaCopy(cafeteriaTestPal, &BG_PALETTE[mapImpostorTestPalLen + belowTilesPalLen], cafeteriaTestPalLen);
+	//dmaCopy(cafeteriaTestPal, BG_PALETTE, cafeteriaTestPalLen);
+
+
+	//test remplacer les tile par les pallette
+	int x, y;
+	for(x=0; x<255; ++x){
+		for(y=0; y<1024; ++y){
+			BG_TILE_RAM(1)[x] = BG_PALETTE[x];
+		}
+	}
+
+	//Afficher toute les tiles
+	for(j=0; j<SCREEN_TILE_HEIGHT; ++j){
+		for(i=0; i<SCREEN_TILE_WIDTH; ++i){
+			//BG_MAP_RAM(2)[32*j + i] = 32*j + i;
+		}
+	}*/
 
 
 	/*

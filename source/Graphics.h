@@ -5,16 +5,21 @@
 #define SCREEN_WIDTH	256
 #define	SCREEN_HEIGHT	192
 
+#define SCREEN_TILE_WIDTH	32
+#define	SCREEN_TILE_HEIGHT	24
+
 //Offset des tiles dans upperTiles
-#define OFF_CHIFFRES_LIGNE1 1;
-#define OFF_CHIFFRES_LIGNE2 22;
-#define OFF_CHIFFRES_LIGNE3 42;
-#define OFF_COEUR 62;
-#define OFF_BARRE_COULEUR 66;
+#define OFF_CHIFFRES_LIGNE1	1
+#define OFF_CHIFFRES_LIGNE2	22
+#define OFF_CHIFFRES_LIGNE3 42
+#define OFF_COEUR 62
+#define OFF_BARRE_COULEUR 66
 
 //Offset des tiles dans belowTiles
-#define OFF_PIQUE_SIMPLE 1;
-#define OFF_OBJECTIF 7;
+#define OFF_PIQUE_SIMPLE 1
+#define OFF_OBSTACLE 6
+#define OFF_OBJECTIF_ROUGE 10
+#define OFF_OBJECTIF_VERT 14
 
 
 /*
