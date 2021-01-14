@@ -196,6 +196,7 @@ int main(void) {
 
 			below_ini_title_screen();
 
+			upper_ini_ingame_screen();
 
 			upper_afficher_vie(&status);
 			upper_afficher_compteur(status.score);

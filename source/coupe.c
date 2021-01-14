@@ -140,6 +140,7 @@ void mini_jeu_coupe(game_status* status){
 
 		if(status->minigame_left_time <= 0){
 			echec = true;
+			status->vie_restante -= 1;
 		}
 
 		/*if(touch.px > 8*18 && touch.px < 8*20 && touch.py > 8*18 && touch.py < 8*20){ //si l'écran a été touché
