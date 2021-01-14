@@ -6,6 +6,9 @@
 #include "Graphics.h"
 #include "jeu.h"
 
+#define	TEMPS_MIN 150
+#define	TEMPS_MAX 1500
+
 typedef struct {
 	int tileX;
 	int tileY;

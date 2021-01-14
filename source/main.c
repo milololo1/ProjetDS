@@ -97,7 +97,7 @@ int main(void) {
 	upper_afficher_vie(&status);
 	//upper_cacher_vie(&status);
 
-	upper_afficher_barre(27);
+	upper_afficher_barre(32);
 	//upper_cacher_barre();
 	//upper_afficher_barre(7);
 
@@ -147,8 +147,8 @@ int main(void) {
 					 *
 					 */
 				//printf("on utilise le random\n");
-				//int random = rand() % 2; //retourne un nombre entre 0 et 1
-				int random = 0;
+				int random = rand() % 2; //retourne un nombre entre 0 et 1
+				//int random = 1;
 				//printf("random number: %i\n", random);
 
 
