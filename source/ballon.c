@@ -251,9 +251,8 @@ void mini_jeu_ballon(game_status* status)
 	oamUpdate(&oamMain);
 
 	//liberation de la memoire
-	int i;
 	obstacle* temp;
-	for(i=0; obstacles_head!=NULL && i<MAX_OBSTACLES; ++i){
+	while(obstacles_head != NULL){
 		temp = obstacles_head;
 		obstacles_head = obstacles_head->next;
 		free(temp);

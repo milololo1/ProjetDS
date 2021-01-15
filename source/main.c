@@ -52,7 +52,6 @@ void EcranTemporaire(){
 
 int main(void) {
 
-	//à déf à l'extérieur (je sais pas encore)
 	bool recharge_du_jeu = false;
 	bool lancement_du_jeu = false;
 
@@ -77,9 +76,6 @@ int main(void) {
 	status.difficulte = &difficulte_cpt;
 	status.vitesse = &vitesse_cpt;
 
-	//irqInit();
-	//irqEnable(IRQ_VBLANK);
-
 	Graphics_ini();
 	upper_ini_ingame_screen();
 	below_ini_ingame_screen();
@@ -95,20 +91,8 @@ int main(void) {
 	
 	update_vie(&status, 3);
 	upper_afficher_vie(&status);
-	//upper_cacher_vie(&status);
 
 	upper_afficher_barre(32);
-	//upper_cacher_barre();
-	//upper_afficher_barre(7);
-
-	//consoleDemoInit();
-
-	//mini_jeu_ballon(&status);
-	//mini_jeu_coupe(&status);
-
-	/*while(1){
-		swiWaitForVBlank();
-	}*/
 
 	srand(time(NULL)); //IMPORTANT (à faire une seule fois)
 
@@ -117,45 +101,25 @@ int main(void) {
 	mmStart(MOD_TEST1, MM_PLAY_LOOP);*/
 
 
-    //printf("\nTemplate nds\n");
+
 
 	//while général qui contient tout le déroulement du jeu
 	while(1){
-		//printf("press A button\n");
-		/*
-		*
-		* ici création du menu (bouton pour lancer le jeu + bg si nécessaire)
-		*
-		*/
+
+		//while qui gère le retour après une défaite
 		while(!handleKeysMenu()){
 
-				swiWaitForVBlank(); //nécessaire?
+				swiWaitForVBlank();
 			}
-			printf("jeu lance\n");
+
 			lancement_du_jeu = false;
 
-			//irqInit();
-			//irqEnable(IRQ_VBLANK);
-
+			//boucle qui lance les jeux
 			while(status.vie_restante != 0){
-					/*
-					 *
-					 *
-					 *
-					 * le jeu est lancé, on entre dans une boucle while qui lance des jeux
-					 *
-					 *
-					 */
-				//printf("on utilise le random\n");
+
 				int random = rand() % 2; //retourne un nombre entre 0 et 1
-				//int random = 1;
-				//printf("random number: %i\n", random);
 
-
-				//printf("on attend\n");
 				EcranTemporaire(); //On fait attendre le joueur entre chaque jeu
-				//printf("on attend plus\n");
-
 
 				if(random == 0){
 					mini_jeu_ballon(&status);
@@ -164,7 +128,7 @@ int main(void) {
 					mini_jeu_coupe(&status);
 				}
 
-				//Actualise l'affichage de l ecran du dessus
+				//Actualise l'affichage de l écran du dessus
 				upper_afficher_vie(&status);
 				upper_afficher_compteur(status.score);
 				upper_afficher_compteur(status.difficulte);
@@ -180,22 +144,10 @@ int main(void) {
 			status.vitesse->nombre = 1;
 			status.vie_restante = VIE_MAX;
 
-			//while(!handleKeysMenu()){
-					/*
-					 *
-					 *
-					 * le jeu a été perdu, on affiche un écran particulier avec un bouton pour
-					 * revenir au menu
-					 *
-					 *
-					 */
-
-				//swiWaitForVBlank(); //nécessaire?
-			//}
-
-
+			//modifie l'écran pour remettre celui du début
 			below_ini_title_screen();
 
+			//réaffiche correctement l'écran du haut
 			upper_ini_ingame_screen();
 
 			upper_afficher_vie(&status);
