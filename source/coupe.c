@@ -46,8 +46,8 @@ void configuration_objectif_coupe(int nombre){
 	uint16 randomY = 0;
 	for(i = 0; i < nombre; ++i){
 
-		randomX = (rand() % SCREEN_TILE_WIDTH - 2) + 1;
-		randomY = (rand() % SCREEN_TILE_HEIGHT - 2) + 1;
+		randomX = (rand() % (SCREEN_TILE_WIDTH - 2)) + 1;
+		randomY = (rand() % (SCREEN_TILE_HEIGHT - 2)) + 1;
 
 		(list_of_objectif[i])->tileX = randomX;
 		(list_of_objectif[i])->tileY = randomY;
