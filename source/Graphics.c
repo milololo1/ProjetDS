@@ -3,6 +3,8 @@
 #include "mapImpostorTest.h"
 #include "upper_ingameTest.h"
 #include "titleScreenTest.h"
+#include "background_wood.h"
+#include "background_sky.h"
 #include "belowTiles.h"
 #include "upperTiles.h"
 #include "cafeteriaTest.h"
@@ -267,8 +269,8 @@ void below_ini_wait_screen(){
 	below_ini_transi_screen();
 
 	//Copie dans la memoire de la map et des palettes.
-	dmaCopy(cafeteriaTestBitmap, BG_BMP_RAM(24), cafeteriaTestBitmapLen);
-	dmaCopy(cafeteriaTestPal, BG_PALETTE, cafeteriaTestPalLen);
+	dmaCopy(background_woodBitmap, BG_BMP_RAM(24), background_woodBitmapLen);
+	dmaCopy(background_woodPal, BG_PALETTE, background_woodPalLen);
 }
 
 void below_ini_title_screen(){
@@ -298,9 +300,9 @@ void below_ini_ingame_screen()
 	BGCTRL[3] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(0) | BG_TILE_BASE(1);
 
 	//Copie dans la memoire des tiles, map et palettes.
-	dmaCopy(mapImpostorTestTiles, BG_TILE_RAM(1), mapImpostorTestTilesLen);
-	dmaCopy(mapImpostorTestMap, BG_MAP_RAM(0), mapImpostorTestMapLen);
-	dmaCopy(mapImpostorTestPal, BG_PALETTE, mapImpostorTestPalLen);
+	dmaCopy(background_skyTiles, BG_TILE_RAM(1), background_skyTilesLen);
+	dmaCopy(background_skyMap, BG_MAP_RAM(0), background_skyMapLen);
+	dmaCopy(background_skyPal, BG_PALETTE, background_skyPalLen);
 
 
 	/*
