@@ -8,22 +8,14 @@
 #include "Graphics.h"
 #include "Timer.h"
 
+#include <maxmod9.h>
+#include "soundbank.h"
+#include "soundbank_bin.h"
+
+//Configuration du temps total pour faire le mini jeux
 void configuration_temp_total(game_status* status){
-	status->minigame_total_time = TEMPS_MAX/(status->vitesse->nombre) + TEMPS_MIN;
+	status->minigame_total_time = TEMPS_MAX_BALLON/(status->vitesse->nombre) + TEMPS_MIN_BALLON;
 	AnnexeCounter(status);
-}
-
-void configuration_Sprites()
-{
-	//Initialisation de sprite manager and the engine
-	oamInit(&oamMain, SpriteMapping_1D_32, false);
-
-	//Allocation de l'espace pour le graph afin d'afficher le sprite
-	gfx_ballon = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
-
-	//Copie dans la memoire de la bitmap et palette
-	swiCopy(spriteBallonPal, SPRITE_PALETTE, spriteBallonPalLen/2);
-	swiCopy(spriteBallonTiles, gfx_ballon, spriteBallonTilesLen/2);
 }
 
 void afficher_objectif_rouge(){
@@ -40,6 +32,7 @@ void afficher_objectif_vert(){
 	BG_MAP_RAM(1)[SCREEN_TILE_WIDTH*(OBJECTIF_TILEY+1) + OBJECTIF_TILEX+1] = 3+OFF_OBJECTIF_VERT;
 }
 
+//ajoute un obstacle à la liste d'obstacles à un endroit donné
 void ajouter_obstacle(obstacle** head, int tileX, int tileY){
 	//Ne pas ajouter si l'obstacle n'est pas dans les limites du jeu
 	if(tileX < 5 || SCREEN_TILE_WIDTH-6 < tileX || tileY < 1 || SCREEN_TILE_HEIGHT-3 < tileY){return;}
@@ -61,6 +54,7 @@ void ajouter_obstacle(obstacle** head, int tileX, int tileY){
 	*head = new;
 }
 
+//ajoute un nombre d'obstacles à la liste d'obstacles dans une région (block) donnée
 void configuration_block_d_obstacles(obstacle** head, int block_tileX, int block_tileY, int height, int width, int nombre){
 
 	int randomX;
@@ -74,31 +68,33 @@ void configuration_block_d_obstacles(obstacle** head, int block_tileX, int block
 	}
 }
 
+//configuration des obstacles selon la difficulté du jeu
 void configuration_obstacles(obstacle** head, int difficulte){
 
 	switch (difficulte){
 		case 1:
-			configuration_block_d_obstacles(head, 5, 3, 10, 10, 3);
-			configuration_block_d_obstacles(head, 15, 3, 10, 10, 3);
-			configuration_block_d_obstacles(head, 5, 13, 10, 10, 3);
-			configuration_block_d_obstacles(head, 15, 13, 10, 10, 3);
+			configuration_block_d_obstacles(head, 5, 3, 10, 10, 2);
+			configuration_block_d_obstacles(head, 15, 3, 10, 10, 2);
+			configuration_block_d_obstacles(head, 5, 13, 10, 10, 2);
+			configuration_block_d_obstacles(head, 15, 13, 10, 10, 2);
 			break;
 
 		case 2:
-			configuration_block_d_obstacles(head, 5, 3, 10, 10, 5);
-			configuration_block_d_obstacles(head, 17, 1, 10, 10, 5);
-			configuration_block_d_obstacles(head, 5, 13, 10, 10, 5);
-			configuration_block_d_obstacles(head, 17, 11, 10, 10, 5);
+			configuration_block_d_obstacles(head, 5, 3, 10, 10, 4);
+			configuration_block_d_obstacles(head, 17, 1, 10, 10, 4);
+			configuration_block_d_obstacles(head, 5, 13, 10, 10, 4);
+			configuration_block_d_obstacles(head, 17, 11, 10, 10, 4);
 			break;
 
 		default: //3 ou plus
-			configuration_block_d_obstacles(head, 5, 3, 10, 10, 7);
-			configuration_block_d_obstacles(head, 17,1, 10, 10, 7);
-			configuration_block_d_obstacles(head, 5, 13, 10, 10, 7);
-			configuration_block_d_obstacles(head, 17, 11, 10, 10, 7);
+			configuration_block_d_obstacles(head, 5, 3, 10, 10, 6);
+			configuration_block_d_obstacles(head, 17,1, 10, 10, 6);
+			configuration_block_d_obstacles(head, 5, 13, 10, 10, 6);
+			configuration_block_d_obstacles(head, 17, 11, 10, 10, 6);
 	}
 }
 
+//affiche tout les obstacles de la liste
 void afficher_obstacles(obstacle* head){
 	obstacle* it = head;
 	int i;
@@ -111,6 +107,7 @@ void afficher_obstacles(obstacle* head){
 	}
 }
 
+//affiche le bord de piques
 void afficher_bord(){
 	int tileX;
 	int tileY;
@@ -125,6 +122,7 @@ void afficher_bord(){
 	}
 }
 
+//retourne vrais si et seulement si le sprite du ballon touche le bord de piques
 int collision_bord(int ballonX, int ballonY){
     return !((ballonX < (SCREEN_WIDTH - BALLON_HITBOX_WIDTH - 6))
     		&& (ballonY < (SCREEN_HEIGHT - BALLON_HITBOX_HEIGHT - 6))
@@ -132,14 +130,20 @@ int collision_bord(int ballonX, int ballonY){
     		&& (ballonY  > 6));
 }
 
+//retourne vrais si et seulement si le sprite du ballon touche un des obstacles
 int collision_obstacle(obstacle* head, int ballonX, int ballonY){
 	obstacle* it = head;
 	int i;
-	for(i=0; it!=NULL && i<MAX_OBSTACLES; ++i){
-		if((ballonX < ((it->tileX)*8 + 13))
-	    	&& (ballonY < (it->tileY)*8 + 13)
-	    	&& (ballonX  > (it->tileX)*8 - 13)
-	    	&& (ballonY  > (it->tileY)*8 - 13)){
+	for(i=0; it!=NULL && i<MAX_OBSTACLES; ++i){//obstacle en forme de croix suisse
+		if(((ballonX < (it->tileX)*8 + 7)
+	    	&& (ballonY < (it->tileY)*8 + 12)
+	    	&& (ballonX  > (it->tileX)*8 - 7)
+	    	&& (ballonY  > (it->tileY)*8 - 12))
+	    	||
+	    	((ballonX < (it->tileX)*8 + 12)
+	    	&& (ballonY < (it->tileY)*8 + 7)
+	    	&& (ballonX  > (it->tileX)*8 - 12)
+	    	&& (ballonY  > (it->tileY)*8 - 7))){
 	    		return 1;
 	    	}
 		it = it->next;
@@ -147,6 +151,7 @@ int collision_obstacle(obstacle* head, int ballonX, int ballonY){
 	return 0;
 }
 
+//retourne vrais si et seulement si le sprite du ballon touche l'objectif
 int collision_objectif(int ballonX, int ballonY){
 	return ((ballonX < (OBJECTIF_TILEX*8 + 10))
     		&& (ballonY < (OBJECTIF_TILEY*8 + 10))
@@ -154,10 +159,11 @@ int collision_objectif(int ballonX, int ballonY){
     		&& (ballonY  > (OBJECTIF_TILEY*8 - 10)));
 }
 
+
+
 void mini_jeu_ballon(game_status* status)
 {
-
-	//Inisialisation variables
+	//Initialisation variables
 	int ballonX = BALLON_STARTX, ballonY = BALLON_STARTY, keys;
 	bool echec = false;
 	bool succes = false;
@@ -174,8 +180,10 @@ void mini_jeu_ballon(game_status* status)
 	afficher_obstacles(obstacles_head);
 	afficher_objectif_rouge();
 
-	//Configuration des sprites et initialisation des graphiques
-	configuration_Sprites();
+	//Initialisation de sprite manager and the engine
+	oamInit(&oamMain, SpriteMapping_1D_32, false);
+	swiCopy(spriteBallonPal, SPRITE_PALETTE, spriteBallonPalLen/2);
+	swiCopy(spriteBallonTiles, gfx_ballon, spriteBallonTilesLen/2);
 
 	//Boucle principal du mini jeu
 	while(!echec && !succes){
@@ -219,6 +227,7 @@ void mini_jeu_ballon(game_status* status)
 				swiCopy(spriteBallonCassePal, SPRITE_PALETTE, spriteBallonCassePalLen/2);
 				swiCopy(spriteBallonCasseTiles, gfx_ballon, spriteBallonCasseTilesLen/2);
 			}
+			mmEffect(SFX_ECHEC);
 		}
 
 		if(collision_objectif(ballonX, ballonY)){
@@ -227,6 +236,7 @@ void mini_jeu_ballon(game_status* status)
 			status->score->nombre += 1;
 			status->difficulte->nombre = (status->difficulte->nombre % 3) + 1;
 			if(status->difficulte->nombre == 1) status->vitesse->nombre += 1;
+			mmEffect(SFX_VICTOIRE);
 		}
 	}
 

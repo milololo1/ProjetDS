@@ -6,8 +6,8 @@
 #include "Graphics.h"
 #include "jeu.h"
 
-#define	TEMPS_MIN 150
-#define	TEMPS_MAX 1500
+#define	TEMPS_MIN_COUPE 150
+#define	TEMPS_MAX_COUPE 1500
 
 typedef struct {
 	int tileX;
@@ -16,4 +16,8 @@ typedef struct {
 	int compteur;
 } objectif_coupe;
 
+/*
+ * mini_jeu_coupe:
+ * lance le mini_jeu_coupe selon le statut (status) d'un jeu global
+ */
 void mini_jeu_coupe(game_status* status);

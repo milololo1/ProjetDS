@@ -1,43 +1,16 @@
 #include "Graphics.h"
-#include "cafeteriaTest.h"
-#include "mapImpostorTest.h"
-#include "upper_ingameTest.h"
-#include "titleScreenTest.h"
+#include "background_upper.h"
+#include "titleScreen.h"
 #include "background_wood.h"
 #include "background_sky.h"
 #include "belowTiles.h"
 #include "upperTiles.h"
-#include "cafeteriaTest.h"
-#include "costumTiles.h"
 #include "jeu.h"
 
-
+//Couleurs de la barre du temps
 #define TIME_COLOR_0 RGB15(15,15,15)
 #define TIME_COLOR_1 RGB15(0,31,0)
 #define TIME_COLOR_2 RGB15(0,0,31)
-
-
-void Graphics_ini()
-{
-	//Swap LCD pour pouvoir eventuellement utiliser le framebuffer sur le SUB
-	REG_POWERCNT ^= BIT(15);
-}
-
-//util si on utilise le framebuffer un jour
-void Graphics_assignBuffer(enum BUFFER_TYPE bT, u16* buffer, int w, int h)
-{
-    switch(bT)
-    {
-        case MAIN: Graphics_mainBuffer = buffer;
-            Graphics_mainW = w;
-            Graphics_mainH = h;
-            break;
-        case SUB: Graphics_subBuffer = buffer;
-            Graphics_subW = w;
-            Graphics_subH = h;
-            break;
-    }
-}
 
 void upper_ini_ingame_screen()
 {
@@ -51,31 +24,27 @@ void upper_ini_ingame_screen()
 	/*
 	 * Configuration du background BG3 en tiled mode, 32x32 grille and 256 couleurs
 	 */
-
-	//cours| cours | 0*2kb | 1*16kb
 	BGCTRL_SUB[3] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(0) | BG_TILE_BASE(1);
 
 	//Copie dans la memoire des tiles, map et palettes.
-	dmaCopy(upper_ingameTestTiles, BG_TILE_RAM_SUB(1), upper_ingameTestTilesLen);
-	dmaCopy(upper_ingameTestMap, BG_MAP_RAM_SUB(0), upper_ingameTestMapLen);
-	dmaCopy(upper_ingameTestPal, BG_PALETTE_SUB, upper_ingameTestPalLen);
+	dmaCopy(background_upperTiles, BG_TILE_RAM_SUB(1), background_upperTilesLen);
+	dmaCopy(background_upperMap, BG_MAP_RAM_SUB(0), background_upperMapLen);
+	dmaCopy(background_upperPal, BG_PALETTE_SUB, background_upperPalLen);
 
 
 	/*
 	 * Configuration du background BG2 en tiled mode, 32x32 grille and 256 couleurs
 	 */
-
-	//cours| cours | 1*2kb | 2*16kb
 	BGCTRL_SUB[2] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(1) | BG_TILE_BASE(2);
 
 	//Copie dans la memoire des tiles, map et palettes.
 	dmaCopy(upperTilesTiles, BG_TILE_RAM_SUB(2), upperTilesTilesLen);
 	int i,j;
 	for(i=32; i<upperTilesTilesLen; i++){
-		BG_TILE_RAM_SUB(2)[i] += upper_ingameTestPalLen << 8 | upper_ingameTestPalLen;
+		BG_TILE_RAM_SUB(2)[i] += background_upperPalLen << 8 | background_upperPalLen;
 	}
 	dmaCopy(upperTilesMap, BG_MAP_RAM_SUB(1), upperTilesMapLen);
-	dmaCopy(upperTilesPal, &BG_PALETTE_SUB[upper_ingameTestPalLen], upperTilesPalLen);
+	dmaCopy(upperTilesPal, &BG_PALETTE_SUB[background_upperPalLen], upperTilesPalLen);
 
 	//Initialisation de la map en transparant
 	for(j=0; j<32; ++j){
@@ -86,11 +55,12 @@ void upper_ini_ingame_screen()
 
 
 	/*
-	 * activation background 2 et 3 //A ACTIVER DANS LE MAIN???
+	 * activation background 2 et 3
 	 */
 	REG_DISPCNT_SUB = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE;
 }
 
+//Affiche un chiffre sur le SUB engine
 void upper_afficher_chiffre(int chiffre, int tileX, int tileY)
 {
 	if(tileX > 30 || tileX < 0 || tileY > 21 || tileY < 0) return;
@@ -105,6 +75,7 @@ void upper_afficher_chiffre(int chiffre, int tileX, int tileY)
 	BG_MAP_RAM_SUB(1)[32*(tileY+2) + tileX+1] = chiffre_off+1 + OFF_CHIFFRES_LIGNE3;
 }
 
+//Affiche un nombre sur le SUB engine
 void upper_afficher_nombre(int nombre, int tileX, int tileY)
 {
 	if(tileX > 30 || tileX < 0 || tileY > 21 || tileY < 0) return;
@@ -136,6 +107,7 @@ void upper_afficher_compteur(compteur* cpt)
 	upper_afficher_nombre(cpt->nombre, cpt->tileX, cpt->tileY);
 }
 
+//Cache un compteur (pas utilisé dans le projet au final)
 void upper_cacher_compteur(compteur* cpt)
 {
 	int tileY = cpt->tileY;
@@ -169,6 +141,7 @@ void upper_afficher_vie(game_status* status)
 	}
 }
 
+//Cache la vie (pas utilisé dans le projet au final)
 void upper_cacher_vie(game_status* status)
 {
 	int tileX = VIE_TILEX;
@@ -183,6 +156,7 @@ void upper_cacher_vie(game_status* status)
 	}
 }
 
+//dessine la barre restante avec la couleur
 void upper_dessiner_barre(int barre_restante, int couleur)
 {
 	int tileX = BARRE_TILEX;
@@ -202,12 +176,6 @@ void upper_dessiner_barre(int barre_restante, int couleur)
 
 void upper_afficher_barre(int barre_restante)
 {
-	/*
-	BG_MAP_RAM_SUB(1)[0] = OFF_BARRE_COULEUR;
-	BG_MAP_RAM_SUB(1)[1] = 1+OFF_BARRE_COULEUR;
-	BG_MAP_RAM_SUB(1)[2] = 2+OFF_BARRE_COULEUR;
-	 */
-
 	if(barre_restante > 32) {
 		barre_restante = 32;
 	} else if(barre_restante < 0) {
@@ -230,6 +198,7 @@ void upper_afficher_barre(int barre_restante)
 	}
 }
 
+//Cache la barre (pas utilisé dans le projet au final)
 void upper_cacher_barre()
 {
 	int tileX = BARRE_TILEX;
@@ -242,6 +211,7 @@ void upper_cacher_barre()
 	}
 }
 
+//configuration du MAIN graphical engine en ROTOSCALE mode pour le wait et title screen
 void below_ini_transi_screen(){
 	/*
 	 * Mise a disposition de la RAM memory bank pour le main engine
@@ -278,9 +248,10 @@ void below_ini_title_screen(){
 	below_ini_transi_screen();
 
 	//Copie dans la memoire de la map et des palettes.
-	dmaCopy(titleScreenTestBitmap, BG_BMP_RAM(24), titleScreenTestBitmapLen);
-	dmaCopy(titleScreenTestPal, BG_PALETTE, titleScreenTestPalLen);
+	dmaCopy(titleScreenBitmap, BG_BMP_RAM(24), titleScreenBitmapLen);
+	dmaCopy(titleScreenPal, BG_PALETTE, titleScreenPalLen);
 }
+
 
 void below_ini_ingame_screen()
 {
@@ -290,13 +261,12 @@ void below_ini_ingame_screen()
 	VRAM_A_CR = VRAM_ENABLE //Enable
 			| VRAM_A_MAIN_BG; //Bank for the main engine
 	VRAM_B_CR = VRAM_ENABLE |
-			VRAM_B_MAIN_SPRITE_0x06400000; //offset pour les sprites car VRAM A utilise
+			VRAM_B_MAIN_SPRITE_0x06400000; //offset pour les sprites car VRAM A est deja utilise
 
 
 	/*
 	 * Configuration du background BG3 en tiled mode, 32x32 grille and 256 couleurs
 	 */
-	//cours| cours | 0*2kb | 1*16kb
 	BGCTRL[3] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(0) | BG_TILE_BASE(1);
 
 	//Copie dans la memoire des tiles, map et palettes.
@@ -308,17 +278,16 @@ void below_ini_ingame_screen()
 	/*
 	 * Configuration du background BG2 en tiled mode, 32x32 grille and 256 couleurs
 	 */
-	//cours| cours | 1*2kb | 2*16kb
 	BGCTRL[2] = BG_32x32 | BG_COLOR_256 | BG_MAP_BASE(1) | BG_TILE_BASE(2);
 
 	//Copie dans la memoire des tiles, map et palettes.
 	dmaCopy(belowTilesTiles, BG_TILE_RAM(2), belowTilesTilesLen);
 	int i,j;
 	for(i=32; i<belowTilesTilesLen; i++){
-		BG_TILE_RAM(2)[i] += mapImpostorTestPalLen << 8 | mapImpostorTestPalLen;
+		BG_TILE_RAM(2)[i] += background_skyPalLen << 8 | background_skyPalLen;
 	}
 	dmaCopy(belowTilesMap, BG_MAP_RAM(1), belowTilesMapLen);
-	dmaCopy(belowTilesPal, &BG_PALETTE[mapImpostorTestPalLen], belowTilesPalLen);
+	dmaCopy(belowTilesPal, &BG_PALETTE[background_skyPalLen], belowTilesPalLen);
 
 	//Initialisation de la map en transparant
 	for(j=0; j<32; ++j){
@@ -333,9 +302,6 @@ void below_ini_ingame_screen()
 	 */
 	REG_DISPCNT = MODE_0_2D | DISPLAY_BG2_ACTIVE | DISPLAY_BG3_ACTIVE;
 }
-
-
-
 
 
 

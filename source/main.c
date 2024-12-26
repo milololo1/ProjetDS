@@ -1,6 +1,6 @@
 /*
- * Template Nintendo DS
- * May 2011
+ * Projet Nintendo DS
+ * Léonard Vaney (284023), Aloïs Mattei (274617)
  */
 
 #include <nds.h>
@@ -16,15 +16,11 @@
 #include "soundbank.h"
 #include "soundbank_bin.h"
 
-
-#include "mapImpostorTest.h"
-#include "cafeteriaTest.h"
 #include "belowTiles.h"
 
 
-
 /*
- * Affiche qqch pendant quelques secondes, pour que le joueur
+ * Affiche l'écran d'attente pendant quelques secondes pour que le joueur
  * se prépare au prochain mini-jeu
  */
 void EcranTemporaire(){
@@ -49,11 +45,19 @@ void EcranTemporaire(){
 	below_ini_ingame_screen();
 }
 
-
 int main(void) {
 
-	bool recharge_du_jeu = false;
-	bool lancement_du_jeu = false;
+	//Initialisation des graphiques
+	REG_POWERCNT ^= BIT(15); //Swap LCD pour pouvoir avoir plus d'options (et de banks) pour les mini-jeux
+	upper_ini_ingame_screen();
+	below_ini_ingame_screen();
+	below_ini_title_screen();
+
+	//Allocation de l'espace pour le graph afin d'afficher le sprite
+	gfx_ballon = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
+
+	//Initialisation des variables
+	bool lancement_du_jeu;
 
 	compteur score_cpt;
 	score_cpt.tileX = SCORE_TILEX;
@@ -76,31 +80,25 @@ int main(void) {
 	status.difficulte = &difficulte_cpt;
 	status.vitesse = &vitesse_cpt;
 
-	Graphics_ini();
-	upper_ini_ingame_screen();
-	below_ini_ingame_screen();
-	below_ini_title_screen();
-
-
-	status.score->nombre = 0;
-	upper_afficher_compteur(status.score);
 	status.difficulte->nombre = 1;
-	upper_afficher_compteur(status.difficulte);
 	status.vitesse->nombre = 1;
-	upper_afficher_compteur(status.vitesse);
-	
-	update_vie(&status, 3);
+	status.vie_restante = VIE_MAX;
+	upper_ini_ingame_screen();
+	upper_afficher_compteur(status.score);
 	upper_afficher_vie(&status);
-
+	upper_afficher_compteur(status.difficulte);
+	upper_afficher_compteur(status.vitesse);
 	upper_afficher_barre(32);
 
 	srand(time(NULL)); //IMPORTANT (à faire une seule fois)
 
-	/*mmInitDefaultMem((mm_addr)soundbank_bin);
-	mmLoad(MOD_TEST1);
-	mmStart(MOD_TEST1, MM_PLAY_LOOP);*/
+	//Initialisation du son
+	mmInitDefaultMem((mm_addr)soundbank_bin);
+	mmLoad(MOD_MARIOPAINT);
+	mmLoadEffect(SFX_ECHEC);
+	mmLoadEffect(SFX_VICTOIRE);
 
-
+	mmStart(MOD_MARIOPAINT, MM_PLAY_LOOP);
 
 
 	//while général qui contient tout le déroulement du jeu
@@ -108,53 +106,51 @@ int main(void) {
 
 		//while qui gère le retour après une défaite
 		while(!handleKeysMenu()){
+			swiWaitForVBlank();
+		}
+		lancement_du_jeu = false;
 
-				swiWaitForVBlank();
+		//réinitialisation du score
+		status.score->nombre = 0;
+		upper_ini_ingame_screen();
+		upper_afficher_compteur(status.score);
+		upper_afficher_vie(&status);
+		upper_afficher_compteur(status.difficulte);
+		upper_afficher_compteur(status.vitesse);
+		upper_afficher_barre(32);
+
+		//boucle qui lance les jeux
+		while(status.vie_restante != 0){
+
+			int random = rand() % 2; //retourne un nombre entre 0 et 1
+			EcranTemporaire(); //On fait attendre le joueur entre chaque jeu
+			if(random == 0){
+				mini_jeu_ballon(&status);
 			}
-
-			lancement_du_jeu = false;
-
-			//boucle qui lance les jeux
-			while(status.vie_restante != 0){
-
-				int random = rand() % 2; //retourne un nombre entre 0 et 1
-
-				EcranTemporaire(); //On fait attendre le joueur entre chaque jeu
-
-				if(random == 0){
-					mini_jeu_ballon(&status);
-				}
-				else{
-					mini_jeu_coupe(&status);
-				}
-
-				//Actualise l'affichage de l écran du dessus
-				upper_afficher_vie(&status);
-				upper_afficher_compteur(status.score);
-				upper_afficher_compteur(status.difficulte);
-				upper_afficher_compteur(status.vitesse);
-				upper_afficher_barre(32);
-				swiWaitForVBlank();
-
-
+			else{
+				mini_jeu_coupe(&status);
 			}
-
-			status.score->nombre = 0;
-			status.difficulte->nombre = 1;
-			status.vitesse->nombre = 1;
-			status.vie_restante = VIE_MAX;
-
-			//modifie l'écran pour remettre celui du début
-			below_ini_title_screen();
-
-			//réaffiche correctement l'écran du haut
-			upper_ini_ingame_screen();
-
+			//Actualise l'affichage de l écran du dessus
 			upper_afficher_vie(&status);
 			upper_afficher_compteur(status.score);
 			upper_afficher_compteur(status.difficulte);
 			upper_afficher_compteur(status.vitesse);
 			upper_afficher_barre(32);
-	}
+			swiWaitForVBlank();
+		}
 
+		//modifie l'écran pour remettre celui du début
+		below_ini_title_screen();
+
+		//réaffiche correctement l'écran du haut
+		status.difficulte->nombre = 1;
+		status.vitesse->nombre = 1;
+		status.vie_restante = VIE_MAX;
+		upper_ini_ingame_screen();
+		upper_afficher_compteur(status.score);
+		upper_afficher_vie(&status);
+		upper_afficher_compteur(status.difficulte);
+		upper_afficher_compteur(status.vitesse);
+		upper_afficher_barre(32);
+	}
 }

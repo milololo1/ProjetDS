@@ -13,8 +13,8 @@
 #define	BALLON_HITBOX_HEIGHT 16
 #define	BALLON_STARTX 16
 #define	BALLON_STARTY 8*20
-#define	TEMPS_MIN 200
-#define	TEMPS_MAX 2000
+#define	TEMPS_MIN_BALLON 200
+#define	TEMPS_MAX_BALLON 2000
 
 
 //pointeur sur le sprite ballon
@@ -28,6 +28,8 @@ typedef struct {
 } obstacle;
 
 
-void configuration_Sprites();
-
+/*
+ * mini_jeu_ballon:
+ * lance le mini_jeu_ballon selon le statut (status) d'un jeu global
+ */
 void mini_jeu_ballon(game_status* status);

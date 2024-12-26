@@ -9,8 +9,6 @@ bool handleKeysMenu(){
 	scanKeys();
 	u16 keys = keysDown();
 
-	//printf("%i\n", keys);
-
 	if(keys & KEY_A){
 		return true;
 	}

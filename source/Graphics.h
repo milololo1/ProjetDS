@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nds.h>
+#include "jeu.h"
 
 #define SCREEN_WIDTH	256
 #define	SCREEN_HEIGHT	192
@@ -22,46 +23,51 @@
 #define OFF_OBJECTIF_VERT 14
 
 
-/*
-	This function does not receive any input parameter. It initializes the main
-	graphical engine to be used.
-	It also enables the corresponding VRAM bank to be used.
-*/
-void Graphics_ini();
 
-//++ A commenter
+/*
+ * upper_ini_ingame_screen:
+ * configuration du SUB graphical engine en Tile mode avec les backgrounds 3 et 2 activés
+ * et mise a disposition de la RAM memory bank
+ */
 void upper_ini_ingame_screen();
-void below_ini_title_screen();
-void below_ini_wait_screen();
+
+/*
+ * below_ini_ingame_screen:
+ * configuration du MAIN graphical engine en Tile mode avec les backgrounds 3 et 2 activés
+ * et mise a disposition de la RAM memory bank
+ */
 void below_ini_ingame_screen();
 
-void upper_afficher_compteur();
-void upper_cacher_compteur();
-void upper_afficher_nombre();
-void upper_afficher_chiffre();
-
-void upper_afficher_vie();
-void upper_cacher_vie();
-
-void upper_afficher_barre();
-void upper_cacher_barre();
-
-
-//--------------------Truc pour le buffer peut etre???----------------------------------------
-enum BUFFER_TYPE
-{
-    MAIN,
-    SUB,
-};
-//members
-u16* Graphics_mainBuffer;
-u16* Graphics_subBuffer;
-int Graphics_mainW;
-int Graphics_mainH;
-int Graphics_subW;
-int Graphics_subH;
 /*
- 	 Function that assigns the buffer (already implemented) and its size
+ * below_ini_title_screen:
+ * configuration du MAIN graphical engine en ROTOSCALE mode avec le background 2 activé,
+ * copie en mémoire de l'image titre (title_screen)
+ * et mise a disposition de la RAM memory bank
  */
-void Graphics_assignBuffer(enum BUFFER_TYPE bT, u16* buffer, int w, int h);
+void below_ini_title_screen();
 
+/*
+ * below_ini_wait_screen:
+ * configuration du MAIN graphical engine en ROTOSCALE mode avec le background 2 activé,
+ * copie en mémoire de l'image d'attente (wait_screen)
+ * et mise a disposition de la RAM memory bank
+ */
+void below_ini_wait_screen();
+
+/*
+ * upper_afficher_compteur:
+ * affiche un compteur (cpt) sur le SUB engine
+ */
+void upper_afficher_compteur(compteur* cpt);
+
+/*
+ * upper_afficher_vie:
+ * affiche la vie d'un jeu (status) sur le SUB engine
+ */
+void upper_afficher_vie(game_status* status);
+
+/*
+ * upper_afficher_barre:
+ * affiche la barre restante sur le SUB engine
+ */
+void upper_afficher_barre(int barre_restante);

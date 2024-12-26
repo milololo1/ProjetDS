@@ -1,23 +1,21 @@
 #pragma once
 
-#define NOMBRE_DE_MINIJEU 0; //le nombre de minijeu total, à définir au fur et à mesure de l'avancée
+#define VIE_MAX 3
+#define VIE_TILEX 28
+#define VIE_TILEY 7
 
-#define VIE_MAX 3;
-#define VIE_TILEX 28;
-#define VIE_TILEY 18;
+#define SCORE_TILEX 4
+#define SCORE_TILEY 7
+#define DIFFICULTE_TILEX 23
+#define DIFFICULTE_TILEY 13
+#define VITESSE_TILEX 23
+#define VITESSE_TILEY 18
 
-#define SCORE_TILEX 5;
-#define SCORE_TILEY 8;
-#define DIFFICULTE_TILEX 14;
-#define DIFFICULTE_TILEY 14;
-#define VITESSE_TILEX 14;
-#define VITESSE_TILEY 18;
+#define BARRE_TILEX 31
+#define BARRE_TILEY 22
 
-#define BARRE_TILEX 31;
-#define BARRE_TILEY 22;
-
-#define BARRE_COULEUR1_THRESHOLD 15;
-#define BARRE_COULEUR2_THRESHOLD 5;
+#define BARRE_COULEUR1_THRESHOLD 15
+#define BARRE_COULEUR2_THRESHOLD 5
 
 
 typedef struct {
@@ -26,6 +24,10 @@ typedef struct {
 	int nombre;
 } compteur;
 
+/*
+ * game_status:
+ * est la structure qui contient les informations principals du jeu
+ */
 typedef struct {
 	compteur* score;
 	int vie_restante;
@@ -37,8 +39,8 @@ typedef struct {
 	int minigame_left_time;
 } game_status;
 
-typedef struct {
-} game_challenge;
-
-
+/*
+ * update_vie:
+ * met à jour la vie avec nb_vie donné
+ */
 void update_vie(game_status* status, int nb_vie);

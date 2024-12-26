@@ -3,11 +3,14 @@
 #include <nds.h>
 #include "jeu.h"
 
-
-void Timer_init();
-
-void ISR_increment1();
-
+/*
+ * Attendre:
+ * fait attendre un nombre de secondes
+ */
 void Attendre(int secondes);
 
+/*
+ * AnnexeCounter:
+ * initialise un compteur pour un jeu et son statut (status)
+ */
 void AnnexeCounter(game_status* status);

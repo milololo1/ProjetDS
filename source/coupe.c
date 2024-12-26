@@ -3,6 +3,11 @@
 #include <stdbool.h>
 
 #include "coupe.h"
+#include "Timer.h"
+
+#include <maxmod9.h>
+#include "soundbank.h"
+#include "soundbank_bin.h"
 
 #define MAX_OBJECTIF 5
 
@@ -22,6 +27,7 @@ void configuration_tiles_coupe_vert(int tileX, int tileY){
 	BG_MAP_RAM(1)[32*(tileY+1) + tileX+1] = 3+OFF_OBJECTIF_VERT;
 }
 
+//configure et initialise les objectifs afin qu'ils deviennent bleu si un nombre de leur pixels à été touché
 void configuration_objectif_coupe(int nombre){
 
 	int i;
@@ -56,6 +62,7 @@ void configuration_objectif_coupe(int nombre){
 	}
 }
 
+//configuration des objectifs selon la difficulté du jeu (status)
 void configuration_mini_jeu_coupe(game_status* status){
 
 	switch (status->difficulte->nombre){
@@ -84,7 +91,7 @@ void mini_jeu_coupe(game_status* status){
 	touchPosition touch;
 
 	//mise en place du timer
-	status->minigame_total_time = TEMPS_MAX/(status->vitesse->nombre) + TEMPS_MIN;
+	status->minigame_total_time = TEMPS_MAX_COUPE/(status->vitesse->nombre) + TEMPS_MIN_COUPE;
 	AnnexeCounter(status);
 
 	while(!echec && !success){
@@ -128,11 +135,13 @@ void mini_jeu_coupe(game_status* status){
 			status->score->nombre += 1;
 			status->difficulte->nombre = (status->difficulte->nombre % 3) + 1;
 			if(status->difficulte->nombre == 1) status->vitesse->nombre += 1;
+			mmEffect(SFX_VICTOIRE);
 		}
 
 		if(status->minigame_left_time <= 0){ //échec par le temps
 			echec = true;
 			status->vie_restante -= 1;
+			mmEffect(SFX_ECHEC);
 		}
 
 		swiWaitForVBlank();

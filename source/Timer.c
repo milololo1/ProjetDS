@@ -5,10 +5,12 @@ int counter0 = 0;
 int counter1 = 0;
 game_status* status_ptr_copy;
 
+//iterruption du counter0
 void ISR_increment0(){
 	counter0++;
 }
 
+//iterruption du counter1
 void ISR_increment1(){
 	status_ptr_copy->minigame_left_time = status_ptr_copy->minigame_total_time - counter1;
 
